@@ -1,32 +1,33 @@
-<!-- Deploy test: 2026-04-02 -->
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AEM Asset Selector — Standalone Test</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta charset="utf-8">
+  <title>AEM Asset Selector — Vanilla JS Test</title>
+  <script
+    src="https://experience.adobe.com/solutions/CQ-assets-selectors/static-assets/resources/assets-selectors.js"></script>
   <style>
     :root {
-      --bg: #0f0f12;
-      --s1: #18181d;
-      --s2: #1f1f26;
+      --bg: #0e0e10;
+      --s1: #16161b;
+      --s2: #1e1e25;
       --b: #2c2c36;
       --t1: #eaeaef;
-      --t2: #9a9aaa;
+      --t2: #9a9aab;
       --t3: #5e5e6e;
       --red: #eb1000;
       --green: #22c55e;
       --blue: #3b82f6;
-      --r: 8px;
+      --amber: #f59e0b;
       --f: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
-      --mono: 'SF Mono', 'Cascadia Code', Consolas, monospace;
+      --mono: 'SF Mono', 'Cascadia Code', Consolas, monospace
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
-      padding: 0;
+      padding: 0
     }
 
     body {
@@ -35,98 +36,91 @@
       color: var(--t1);
       min-height: 100vh;
       display: flex;
-      flex-direction: column;
+      flex-direction: column
     }
 
-    /* ── Header ── */
     header {
-      padding: 16px 24px;
+      padding: 14px 24px;
       border-bottom: 1px solid var(--b);
       background: var(--s1);
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: space-between
     }
 
     header h1 {
-      font-size: 16px;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      font-size: 15px;
+      font-weight: 600
     }
 
     header h1 span {
-      color: var(--red);
+      color: var(--red)
     }
 
     .badge {
       padding: 3px 10px;
       border-radius: 12px;
       font-size: 11px;
-      font-weight: 600;
+      font-weight: 600
     }
 
-    .badge-test {
-      background: rgba(245, 158, 11, 0.15);
-      color: #f59e0b;
+    .badge-wait {
+      background: rgba(245, 158, 11, .15);
+      color: var(--amber)
     }
 
     .badge-ok {
-      background: rgba(34, 197, 94, 0.15);
-      color: var(--green);
+      background: rgba(34, 197, 94, .15);
+      color: var(--green)
     }
 
     .badge-err {
-      background: rgba(235, 16, 0, 0.15);
-      color: var(--red);
+      background: rgba(235, 16, 0, .15);
+      color: var(--red)
     }
 
-    /* ── Main Layout ── */
     main {
       display: flex;
       flex: 1;
-      overflow: hidden;
+      overflow: hidden
     }
 
-    /* ── Left: Config Panel ── */
-    .config-panel {
+    .cfg {
       width: 340px;
       flex-shrink: 0;
       border-right: 1px solid var(--b);
       background: var(--s1);
-      display: flex;
-      flex-direction: column;
       overflow-y: auto;
+      padding-bottom: 20px
     }
 
-    .config-section {
-      padding: 16px 20px;
-      border-bottom: 1px solid var(--b);
+    .cfg section {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--b)
     }
 
-    .config-section h3 {
-      font-size: 11px;
+    .cfg h3 {
+      font-size: 10.5px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.06em;
+      letter-spacing: .06em;
       color: var(--t3);
-      margin-bottom: 12px;
+      margin-bottom: 10px
     }
 
-    .field {
-      margin-bottom: 10px;
+    .fld {
+      margin-bottom: 10px
     }
 
-    .field label {
+    .fld label {
       display: block;
-      font-size: 11.5px;
+      font-size: 11px;
       font-weight: 600;
       color: var(--t2);
-      margin-bottom: 3px;
+      margin-bottom: 3px
     }
 
-    .field input {
+    .fld input {
       width: 100%;
       height: 34px;
       padding: 0 10px;
@@ -134,790 +128,598 @@
       border-radius: 6px;
       background: var(--s2);
       color: var(--t1);
-      font-size: 12.5px;
+      font-size: 12px;
       font-family: var(--f);
-      outline: none;
-      transition: border-color 0.15s;
+      outline: none
     }
 
-    .field input:focus {
-      border-color: var(--blue);
+    .fld input:focus {
+      border-color: var(--blue)
     }
 
-    .field input::placeholder {
+    .fld input::placeholder {
       color: var(--t3);
-      opacity: 0.6;
+      opacity: .5
     }
 
-    .field .hint {
-      font-size: 10.5px;
+    .fld .h {
+      font-size: 10px;
       color: var(--t3);
-      margin-top: 2px;
+      margin-top: 2px
     }
 
     .btn {
-      display: inline-flex;
+      display: flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
+      width: 100%;
       height: 36px;
-      padding: 0 16px;
       border: none;
       border-radius: 6px;
       font-size: 12.5px;
       font-weight: 600;
       font-family: var(--f);
       cursor: pointer;
-      transition: all 0.15s;
-      width: 100%;
+      transition: all .15s
     }
 
-    .btn-red {
+    .btn-r {
       background: var(--red);
-      color: #fff;
+      color: #fff
     }
 
-    .btn-red:hover {
-      background: #d10e00;
+    .btn-r:hover {
+      background: #d10e00
     }
 
-    .btn-red:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-
-    .btn-blue {
+    .btn-b {
       background: var(--blue);
-      color: #fff;
+      color: #fff
     }
 
-    .btn-blue:hover {
-      background: #2563eb;
+    .btn-b:hover {
+      background: #2563eb
     }
 
-    .btn-outline {
+    .btn-o {
       background: transparent;
       color: var(--t2);
-      border: 1px solid var(--b);
+      border: 1px solid var(--b)
     }
 
-    .btn-outline:hover {
-      background: var(--s2);
-      color: var(--t1);
+    .btn-o:hover {
+      background: var(--s2)
     }
 
-    .btn-green {
-      background: var(--green);
-      color: #fff;
-    }
-
-    .btn-green:hover {
-      background: #1aad54;
-    }
-
-    .btn-row {
+    .brow {
       display: flex;
       gap: 8px;
-      margin-top: 12px;
+      margin-top: 10px
     }
 
-    .btn-row .btn {
-      flex: 1;
+    .brow .btn {
+      flex: 1
     }
 
-    /* ── Right: Asset Selector + Log ── */
-    .right-panel {
+    .rp {
       flex: 1;
       display: flex;
       flex-direction: column;
-      overflow: hidden;
+      overflow: hidden
     }
 
     #asset-selector-container {
       flex: 1;
       overflow: auto;
       background: var(--s2);
+      position: relative
+    }
+
+    .ph {
       display: flex;
       align-items: center;
       justify-content: center;
-    }
-
-    .placeholder {
+      height: 100%;
       text-align: center;
       color: var(--t3);
-      padding: 40px;
+      padding: 40px
     }
 
-    .placeholder h2 {
-      font-size: 18px;
-      font-weight: 600;
+    .ph h2 {
+      font-size: 17px;
       color: var(--t2);
-      margin-bottom: 8px;
+      margin-bottom: 6px
     }
 
-    .placeholder p {
+    .ph p {
       font-size: 13px;
       line-height: 1.7;
-      max-width: 360px;
+      max-width: 340px
     }
 
-    /* ── Log Panel ── */
-    .log-panel {
-      height: 200px;
+    dialog#asset-selector-dialog {
+      border: none;
+      border-radius: 8px;
+      padding: 0;
+      background: transparent;
+      width: 90vw;
+      height: 85vh;
+      max-width: 1200px;
+      max-height: 900px
+    }
+
+    dialog#asset-selector-dialog::backdrop {
+      background: rgba(0, 0, 0, .6)
+    }
+
+    .log {
+      height: 220px;
       border-top: 1px solid var(--b);
       background: var(--s1);
       display: flex;
-      flex-direction: column;
+      flex-direction: column
     }
 
-    .log-header {
+    .log-h {
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 6px 16px;
       border-bottom: 1px solid var(--b);
-      font-size: 11px;
+      font-size: 10.5px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--t3);
+      letter-spacing: .05em;
+      color: var(--t3)
     }
 
-    .log-clear {
+    .log-c {
       background: none;
       border: none;
       color: var(--t3);
       font-size: 10px;
       cursor: pointer;
-      font-family: var(--f);
+      font-family: var(--f)
     }
 
-    .log-clear:hover {
-      color: var(--t1);
+    .log-c:hover {
+      color: var(--t1)
     }
 
-    .log-body {
+    .log-b {
       flex: 1;
       overflow-y: auto;
-      padding: 8px 16px;
+      padding: 6px 16px;
       font-family: var(--mono);
-      font-size: 11.5px;
-      line-height: 1.7;
-    }
-
-    .log-entry {
-      padding: 1px 0;
-    }
-
-    .log-entry .time {
-      color: var(--t3);
-    }
-
-    .log-entry.info .msg {
-      color: var(--t2);
-    }
-
-    .log-entry.ok .msg {
-      color: var(--green);
-    }
-
-    .log-entry.err .msg {
-      color: var(--red);
-    }
-
-    .log-entry.warn .msg {
-      color: #f59e0b;
-    }
-
-    .log-entry.event .msg {
-      color: var(--blue);
-    }
-
-    /* ── Selected Assets ── */
-    .selected-panel {
-      border-bottom: 1px solid var(--b);
-      padding: 12px 20px;
-    }
-
-    .selected-panel h3 {
       font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--t3);
-      margin-bottom: 8px;
+      line-height: 1.7
     }
 
-    .selected-assets {
+    .le {
+      padding: 1px 0
+    }
+
+    .le .tm {
+      color: var(--t3)
+    }
+
+    .le.info .m {
+      color: var(--t2)
+    }
+
+    .le.ok .m {
+      color: var(--green)
+    }
+
+    .le.err .m {
+      color: var(--red)
+    }
+
+    .le.warn .m {
+      color: var(--amber)
+    }
+
+    .le.ev .m {
+      color: var(--blue)
+    }
+
+    .sel {
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--b)
+    }
+
+    .sel-list {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 6px;
+      margin-top: 6px
     }
 
-    .selected-asset {
+    .sel-item {
       background: var(--s2);
       border: 1px solid var(--b);
       border-radius: 6px;
-      padding: 6px 10px;
-      font-size: 11.5px;
+      padding: 5px 10px;
+      font-size: 11px;
       color: var(--t2);
       display: flex;
       align-items: center;
-      gap: 6px;
-      max-width: 280px;
+      gap: 6px
     }
 
-    .selected-asset .name {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .selected-asset img {
-      width: 28px;
-      height: 28px;
+    .sel-item img {
+      width: 26px;
+      height: 26px;
       border-radius: 4px;
-      object-fit: cover;
+      object-fit: cover
     }
 
-    .selected-empty {
-      font-size: 12px;
+    .sel-empty {
+      font-size: 11.5px;
       color: var(--t3);
-      font-style: italic;
+      font-style: italic
     }
 
-    /* ── JSON Preview ── */
-    .json-preview {
-      padding: 12px 20px;
+    .json {
+      padding: 12px 20px
     }
 
-    .json-preview h3 {
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--t3);
-      margin-bottom: 8px;
-    }
-
-    .json-block {
+    .json pre {
       background: var(--s2);
       border: 1px solid var(--b);
       border-radius: 6px;
-      padding: 10px 12px;
+      padding: 10px;
       font-family: var(--mono);
-      font-size: 11px;
+      font-size: 10.5px;
       color: var(--t2);
       line-height: 1.6;
-      max-height: 180px;
-      overflow-y: auto;
+      max-height: 160px;
+      overflow: auto;
       white-space: pre-wrap;
-      word-break: break-all;
+      word-break: break-all
     }
 
-    /* ── Scrollbar ── */
     ::-webkit-scrollbar {
-      width: 5px;
+      width: 5px
     }
 
     ::-webkit-scrollbar-track {
-      background: transparent;
+      background: transparent
     }
 
     ::-webkit-scrollbar-thumb {
       background: var(--b);
-      border-radius: 3px;
+      border-radius: 3px
     }
   </style>
 </head>
 
 <body>
-
-  <!-- ━━━ HEADER ━━━ -->
   <header>
-    <h1><span>&#9632;</span> AEM Asset Selector — Standalone Test</h1>
-    <span class="badge badge-test" id="status-badge">Not connected</span>
+    <h1><span>&#9632;</span> AEM Asset Selector — Vanilla JS Test</h1>
+    <span class="badge badge-wait" id="status">Waiting</span>
   </header>
-
-  <!-- ━━━ MAIN ━━━ -->
   <main>
-    <!-- Left: Config -->
-    <div class="config-panel">
-      <div class="config-section">
-        <h3>1. IMS Configuration</h3>
-        <div class="field">
+    <div class="cfg">
+      <section>
+        <h3>1. IMS Auth (required)</h3>
+        <div class="fld">
+          <label>IMS Client ID *</label>
+          <input type="text" id="f-client" placeholder="your-ims-client-id">
+          <div class="h">Provided by Adobe after provisioning</div>
+        </div>
+        <div class="fld">
+          <label>IMS Scope</label>
+          <input type="text" id="f-scope"
+            value="AdobeID,openid,additional_info.projectedProductContext,read_organizations">
+          <div class="h">Adobe recommended scope — change only if instructed</div>
+        </div>
+        <div class="fld">
+          <label>Redirect URI</label>
+          <input type="text" id="f-redirect" placeholder="(auto: current page URL)">
+          <div class="h">Leave blank to use current page URL</div>
+        </div>
+      </section>
+      <section>
+        <h3>2. Asset Selector Props</h3>
+        <div class="fld">
           <label>IMS Org ID *</label>
           <input type="text" id="f-org" placeholder="ABC123@AdobeOrg">
-          <div class="hint">Adobe Admin Console → Org profile</div>
+          <div class="h">Adobe Admin Console → Org profile</div>
         </div>
-        <div class="field">
-          <label>IMS Client ID *</label>
-          <input type="text" id="f-client" placeholder="your-client-id">
-          <div class="hint">From Adobe provisioning</div>
-        </div>
-        <div class="field">
-          <label>API Key *</label>
-          <input type="text" id="f-api" placeholder="your-api-key">
-          <div class="hint">Often same as Client ID</div>
-        </div>
-        <div class="field">
-          <label>IMS Scope</label>
-          <input type="text" id="f-scope" value="openid, AdobeID, additional_info">
-        </div>
-      </div>
-
-      <div class="config-section">
-        <h3>2. Repository</h3>
-        <div class="field">
-          <label>Repository ID</label>
+        <div class="fld">
+          <label>Repository ID (optional)</label>
           <input type="text" id="f-repo" placeholder="author-pXXXXX-eXXXXXX.adobeaemcloud.com">
-          <div class="hint">Leave blank to see all repos</div>
         </div>
+        <div class="fld">
+          <label>Root Path (optional)</label>
+          <input type="text" id="f-root" placeholder="/content/dam">
+        </div>
+      </section>
+      <section>
+        <h3>3. Actions</h3>
+        <div class="brow">
+          <button class="btn btn-r" onclick="openAssetSelectorDialog()">Open Asset Selector (Dialog)</button>
+        </div>
+        <div class="brow">
+          <button class="btn btn-b" onclick="renderInline()">Render Inline</button>
+        </div>
+        <div class="brow">
+          <button class="btn btn-o" onclick="saveConfig()">Save Config</button>
+          <button class="btn btn-o" onclick="resetConfig()">Reset</button>
+        </div>
+      </section>
+      <div class="sel">
+        <h3 style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--t3)">
+          Selected Assets</h3>
+        <div class="sel-list" id="sel-list"><span class="sel-empty">No assets selected yet</span></div>
       </div>
-
-      <div class="config-section">
-        <h3>3. Selector Options</h3>
-        <div class="field">
-          <label>Selection Type</label>
-          <input type="text" id="f-selection" value="multiple">
-          <div class="hint">single or multiple</div>
-        </div>
-        <div class="field">
-          <label>Color Scheme</label>
-          <input type="text" id="f-theme" value="dark">
-          <div class="hint">light or dark</div>
-        </div>
-        <div class="field">
-          <label>AEM Tier</label>
-          <input type="text" id="f-tier" value="author, delivery">
-          <div class="hint">author, delivery, or both</div>
-        </div>
-      </div>
-
-      <div class="config-section">
-        <div class="btn-row">
-          <button class="btn btn-red" id="btn-launch" onclick="launchSelector()">
-            Launch Asset Selector
-          </button>
-        </div>
-        <div class="btn-row">
-          <button class="btn btn-outline" onclick="resetAll()">Reset</button>
-          <button class="btn btn-outline" onclick="saveConfig()">Save Config</button>
-        </div>
-        <div class="btn-row" style="margin-top: 6px;">
-          <button class="btn btn-blue" id="btn-auth-only" onclick="testAuthOnly()">
-            Test IMS Auth Only
-          </button>
-        </div>
-      </div>
-
-      <!-- Selected Assets -->
-      <div class="selected-panel">
-        <h3>Selected Assets</h3>
-        <div class="selected-assets" id="selected-assets">
-          <span class="selected-empty">No assets selected yet</span>
-        </div>
-      </div>
-
-      <!-- JSON Output -->
-      <div class="json-preview">
-        <h3>Last Selection (Raw JSON)</h3>
-        <div class="json-block" id="json-output">Waiting for asset selection...</div>
+      <div class="json">
+        <h3
+          style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--t3);margin-bottom:6px">
+          Last Selection (Raw JSON)</h3>
+        <pre id="json-out">Waiting for selection...</pre>
       </div>
     </div>
-
-    <!-- Right: Selector + Log -->
-    <div class="right-panel">
+    <div class="rp">
       <div id="asset-selector-container">
-        <div class="placeholder">
-          <h2>Asset Selector will render here</h2>
-          <p>Fill in your IMS credentials on the left and click "Launch Asset Selector" to load the Adobe MFE. The IMS
-            login popup will open automatically.</p>
+        <div class="ph">
+          <div>
+            <h2>Asset Selector renders here</h2>
+            <p>Fill in credentials. "Open Asset Selector" for dialog, "Render Inline" to embed directly.</p>
+          </div>
         </div>
       </div>
-
-      <div class="log-panel">
-        <div class="log-header">
-          <span>Event Log</span>
-          <button class="log-clear" onclick="clearLog()">Clear</button>
+      <dialog id="asset-selector-dialog">
+        <div id="asset-selector-dialog-content" style="height:calc(85vh - 20px);width:calc(90vw - 20px);margin:-20px;">
         </div>
-        <div class="log-body" id="log-body"></div>
+      </dialog>
+      <div class="log">
+        <div class="log-h"><span>Event Log</span><button class="log-c" onclick="clearLog()">Clear</button></div>
+        <div class="log-b" id="log-body"></div>
       </div>
     </div>
   </main>
-
-  <!-- ━━━ Adobe Asset Selector UMD ━━━ -->
-  <script
-    src="https://experience.adobe.com/solutions/CQ-assets-selectors/static-assets/resources/assets-selectors.js"></script>
-
   <script>
-    // ══════════════════════════════════════
-    //  STATE
-    // ══════════════════════════════════════
-    const STORAGE_KEY = 'aem-selector-test-config';
-    let selectedAssets = [];
-    let imsInstance = null;
+    // ═══════════════════════════════════════════════════════════════
+    //  Follows Adobe's official vanilla JS UMD pattern EXACTLY:
+    //  github.com/adobe/aem-assets-selectors-mfe-examples
+    //
+    //  KEY FIXES from previous version:
+    //  1. imsScope = 'AdobeID,openid,additional_info.projectedProductContext,read_organizations'
+    //  2. Property is 'redirectUri' (NOT 'redirectUrl')
+    //  3. registerAssetsSelectorsAuthService called on page load
+    //  4. apiKey NOT required for renderAssetSelectorWithAuthFlow
+    //  5. Dialog pattern using <dialog> element
+    //  6. Only imsOrg required in selector props (minimal)
+    // ═══════════════════════════════════════════════════════════════
 
-    // ══════════════════════════════════════
-    //  LOGGING
-    // ══════════════════════════════════════
-    const logBody = document.getElementById('log-body');
+    const STORAGE_KEY = 'aem-selector-test-v2';
+    const logEl = document.getElementById('log-body');
 
     function log(msg, type = 'info') {
-      const now = new Date().toLocaleTimeString('en-US', { hour12: false });
-      const div = document.createElement('div');
-      div.className = `log-entry ${type}`;
-      div.innerHTML = `<span class="time">${now}</span> <span class="msg">${msg}</span>`;
-      logBody.appendChild(div);
-      logBody.scrollTop = logBody.scrollHeight;
-
-      // Also log to browser console for debugging
-      const consoleFn = type === 'err' ? console.error : type === 'warn' ? console.warn : console.log;
-      consoleFn(`[AEM Test] ${msg}`);
+      const t = new Date().toLocaleTimeString('en-US', { hour12: false });
+      const d = document.createElement('div');
+      d.className = 'le ' + type;
+      d.innerHTML = '<span class="tm">' + t + '</span> <span class="m">' + msg + '</span>';
+      logEl.appendChild(d);
+      logEl.scrollTop = logEl.scrollHeight;
+      (type === 'err' ? console.error : type === 'warn' ? console.warn : console.log)('[AEM] ' + msg);
     }
+    function clearLog() { logEl.innerHTML = ''; }
+    function setStatus(t, c) { const e = document.getElementById('status'); e.textContent = t; e.className = 'badge badge-' + c; }
 
-    function clearLog() {
-      logBody.innerHTML = '';
-      log('Log cleared', 'info');
-    }
-
-    function setStatus(text, type) {
-      const badge = document.getElementById('status-badge');
-      badge.textContent = text;
-      badge.className = `badge badge-${type}`;
-    }
-
-    // ══════════════════════════════════════
-    //  CONFIG
-    // ══════════════════════════════════════
-    function readConfig() {
+    // ── Config persistence ──
+    function readCfg() {
       return {
-        imsOrg: document.getElementById('f-org').value.trim(),
         imsClientId: document.getElementById('f-client').value.trim(),
-        apiKey: document.getElementById('f-api').value.trim(),
-        imsScope: document.getElementById('f-scope').value.trim() || 'openid, AdobeID, additional_info',
-        repositoryId: document.getElementById('f-repo').value.trim(),
-        selectionType: document.getElementById('f-selection').value.trim() || 'multiple',
-        colorScheme: document.getElementById('f-theme').value.trim() || 'dark',
-        aemTier: document.getElementById('f-tier').value.trim(),
+        imsScope: document.getElementById('f-scope').value.trim(),
+        redirectUri: document.getElementById('f-redirect').value.trim() || window.location.href,
+        imsOrg: document.getElementById('f-org').value.trim(),
+        repoId: document.getElementById('f-repo').value.trim(),
+        rootPath: document.getElementById('f-root').value.trim(),
       };
     }
-
-    function saveConfig() {
-      const cfg = readConfig();
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(cfg));
-      log('Config saved to localStorage', 'ok');
-    }
-
+    function saveConfig() { localStorage.setItem(STORAGE_KEY, JSON.stringify(readCfg())); log('Config saved', 'ok'); }
     function loadConfig() {
       try {
-        const cfg = JSON.parse(localStorage.getItem(STORAGE_KEY));
-        if (!cfg) return;
-        document.getElementById('f-org').value = cfg.imsOrg || '';
-        document.getElementById('f-client').value = cfg.imsClientId || '';
-        document.getElementById('f-api').value = cfg.apiKey || '';
-        document.getElementById('f-scope').value = cfg.imsScope || 'openid, AdobeID, additional_info';
-        document.getElementById('f-repo').value = cfg.repositoryId || '';
-        document.getElementById('f-selection').value = cfg.selectionType || 'multiple';
-        document.getElementById('f-theme').value = cfg.colorScheme || 'dark';
-        document.getElementById('f-tier').value = cfg.aemTier || 'author, delivery';
-        log('Loaded saved config from localStorage', 'info');
-      } catch (e) {
-        log('No saved config found', 'info');
-      }
+        const c = JSON.parse(localStorage.getItem(STORAGE_KEY)); if (!c) return;
+        document.getElementById('f-client').value = c.imsClientId || '';
+        document.getElementById('f-scope').value = c.imsScope || 'AdobeID,openid,additional_info.projectedProductContext,read_organizations';
+        document.getElementById('f-redirect').value = c.redirectUri || '';
+        document.getElementById('f-org').value = c.imsOrg || '';
+        document.getElementById('f-repo').value = c.repoId || '';
+        document.getElementById('f-root').value = c.rootPath || '';
+        log('Loaded saved config', 'info');
+      } catch (e) { }
     }
-
-    function resetAll() {
+    function resetConfig() {
       localStorage.removeItem(STORAGE_KEY);
-      document.querySelectorAll('.config-panel input').forEach(i => {
-        if (i.id === 'f-scope') i.value = 'openid, AdobeID, additional_info';
-        else if (i.id === 'f-selection') i.value = 'multiple';
-        else if (i.id === 'f-theme') i.value = 'dark';
-        else if (i.id === 'f-tier') i.value = 'author, delivery';
+      document.querySelectorAll('.cfg input').forEach(i => {
+        if (i.id === 'f-scope') i.value = 'AdobeID,openid,additional_info.projectedProductContext,read_organizations';
         else i.value = '';
       });
-      selectedAssets = [];
-      renderSelectedAssets();
-      document.getElementById('json-output').textContent = 'Waiting for asset selection...';
-      document.getElementById('asset-selector-container').innerHTML =
-        '<div class="placeholder"><h2>Asset Selector will render here</h2><p>Fill in your IMS credentials on the left and click "Launch Asset Selector".</p></div>';
-      setStatus('Not connected', 'test');
-      log('Reset complete', 'info');
+      setStatus('Waiting', 'wait'); log('Reset', 'info');
     }
 
-    // ══════════════════════════════════════
-    //  IMS AUTH ONLY (test without selector)
-    // ══════════════════════════════════════
-    function testAuthOnly() {
-      const cfg = readConfig();
+    // ═══════════════════════════════════════════
+    //  STEP 2: Register IMS Auth on load
+    //  (Adobe: "call registerAssetsSelectorsAuthService
+    //   before renderAssetSelectorWithAuthFlow")
+    // ═══════════════════════════════════════════
+    function registerIMS() {
+      const c = readCfg();
+      if (!c.imsClientId) { log('No Client ID — skipping IMS registration', 'warn'); return; }
 
-      if (!cfg.imsClientId) {
-        log('ERROR: IMS Client ID is required', 'err');
-        return;
-      }
-
-      log('Testing IMS authentication only...', 'event');
-      log(`  imsClientId: ${cfg.imsClientId}`, 'info');
-      log(`  imsScope: ${cfg.imsScope}`, 'info');
-      log(`  redirectUrl: ${window.location.href}`, 'info');
-
-      if (typeof PureJSSelectors === 'undefined') {
-        log('ERROR: PureJSSelectors not loaded. Adobe CDN script may be blocked.', 'err');
-        setStatus('SDK not loaded', 'err');
-        return;
-      }
-
-      log('PureJSSelectors global found — SDK loaded OK', 'ok');
-
-      const imsProps = {
-        imsClientId: cfg.imsClientId,
-        imsScope: cfg.imsScope,
-        redirectUrl: window.location.href,
-        modalMode: true,
-
-        onImsServiceInitialized: (service) => {
-          log('EVENT: onImsServiceInitialized — IMS service is ready', 'ok');
-          log(`  Service object keys: ${Object.keys(service).join(', ')}`, 'info');
-          setStatus('IMS initialized', 'ok');
-        },
-
-        onAccessTokenReceived: (token) => {
-          log('EVENT: onAccessTokenReceived — authentication successful!', 'ok');
-          log(`  Token length: ${token ? token.length : 'null'} chars`, 'info');
-          log(`  Token preview: ${token ? token.substring(0, 40) + '...' : 'null'}`, 'info');
-          setStatus('Authenticated', 'ok');
-        },
-
-        onAccessTokenExpired: () => {
-          log('EVENT: onAccessTokenExpired — token has expired', 'warn');
-          setStatus('Token expired', 'err');
-        },
-
-        onErrorReceived: (type, msg) => {
-          log(`EVENT: onErrorReceived — type: ${type}, message: ${msg}`, 'err');
-          setStatus('Auth error', 'err');
-        },
-      };
+      log('Registering IMS auth service...', 'ev');
+      log('  imsClientId: ' + c.imsClientId, 'info');
+      log('  imsScope:    ' + c.imsScope, 'info');
+      log('  redirectUri: ' + c.redirectUri, 'info');
 
       try {
-        imsInstance = PureJSSelectors.registerAssetsSelectorsAuthService(imsProps);
-        log('registerAssetsSelectorsAuthService called successfully', 'ok');
-        log('Waiting for IMS popup... (allow popups if blocked)', 'event');
-      } catch (e) {
-        log(`ERROR in registerAssetsSelectorsAuthService: ${e.message}`, 'err');
-        log(`Stack: ${e.stack}`, 'err');
-        setStatus('Registration failed', 'err');
-      }
-    }
-
-    // ══════════════════════════════════════
-    //  LAUNCH FULL ASSET SELECTOR
-    // ══════════════════════════════════════
-    function launchSelector() {
-      const cfg = readConfig();
-      const container = document.getElementById('asset-selector-container');
-
-      // Validate
-      if (!cfg.imsOrg || !cfg.imsClientId || !cfg.apiKey) {
-        log('ERROR: imsOrg, imsClientId, and apiKey are all required', 'err');
-        return;
-      }
-
-      saveConfig();
-      log('='.repeat(50), 'info');
-      log('LAUNCHING ASSET SELECTOR', 'event');
-      log('='.repeat(50), 'info');
-
-      // Log config
-      log('Config:', 'info');
-      log(`  imsOrg:        ${cfg.imsOrg}`, 'info');
-      log(`  imsClientId:   ${cfg.imsClientId}`, 'info');
-      log(`  apiKey:        ${cfg.apiKey}`, 'info');
-      log(`  imsScope:      ${cfg.imsScope}`, 'info');
-      log(`  repositoryId:  ${cfg.repositoryId || '(not set)'}`, 'info');
-      log(`  selectionType: ${cfg.selectionType}`, 'info');
-      log(`  colorScheme:   ${cfg.colorScheme}`, 'info');
-      log(`  aemTier:       ${cfg.aemTier}`, 'info');
-      log(`  redirectUrl:   ${window.location.href}`, 'info');
-
-      // Check SDK
-      if (typeof PureJSSelectors === 'undefined') {
-        log('ERROR: PureJSSelectors is not defined. The Adobe CDN script failed to load.', 'err');
-        log('Check: Is experience.adobe.com reachable? Any adblocker or firewall?', 'warn');
-        container.innerHTML = '<div class="placeholder"><h2 style="color:#eb1000">SDK Not Loaded</h2><p>The Adobe Asset Selector script from experience.adobe.com did not load. Check your network, adblocker, or firewall.</p></div>';
-        setStatus('SDK error', 'err');
-        return;
-      }
-
-      log('PureJSSelectors loaded OK', 'ok');
-      container.innerHTML = '';
-      setStatus('Connecting...', 'test');
-
-      // ── Step 1: Register IMS ──
-      log('Step 1: Registering IMS auth service...', 'event');
-
-      const imsProps = {
-        imsClientId: cfg.imsClientId,
-        imsScope: cfg.imsScope,
-        redirectUrl: window.location.href,
-        modalMode: true,
-
-        onImsServiceInitialized: (service) => {
-          log('IMS: onImsServiceInitialized fired', 'ok');
-        },
-
-        onAccessTokenReceived: (token) => {
-          log('IMS: onAccessTokenReceived — authenticated!', 'ok');
-          log(`  Token: ${token ? token.substring(0, 30) + '...' : 'null'}`, 'info');
-          setStatus('Authenticated', 'ok');
-        },
-
-        onAccessTokenExpired: () => {
-          log('IMS: onAccessTokenExpired — need re-auth', 'warn');
-          setStatus('Token expired', 'err');
-        },
-
-        onErrorReceived: (type, msg) => {
-          log(`IMS ERROR: ${type} — ${msg}`, 'err');
-          setStatus('Auth error', 'err');
-        },
-      };
-
-      try {
-        imsInstance = PureJSSelectors.registerAssetsSelectorsAuthService(imsProps);
-        log('IMS auth service registered successfully', 'ok');
-      } catch (e) {
-        log(`IMS registration FAILED: ${e.message}`, 'err');
-        setStatus('IMS failed', 'err');
-        return;
-      }
-
-      // ── Step 2: Render Asset Selector ──
-      log('Step 2: Rendering Asset Selector with auth flow...', 'event');
-
-      // Parse aemTier
-      const tierParts = cfg.aemTier.split(',').map(s => s.trim()).filter(Boolean);
-
-      const selectorProps = {
-        imsOrg: cfg.imsOrg,
-        apiKey: cfg.apiKey,
-        repositoryId: cfg.repositoryId || undefined,
-        rail: false,
-        selectionType: cfg.selectionType,
-        colorScheme: cfg.colorScheme,
-        aemTierType: tierParts.length ? tierParts : ['author', 'delivery'],
-        featureSet: ['detail-panel'],
-
-        handleSelection: (assets) => {
-          log(`CALLBACK: handleSelection — ${assets.length} asset(s) confirmed`, 'event');
-          assets.forEach((a, i) => {
-            log(`  [${i}] ${a.name || a['repo:name'] || 'unknown'} (${a['dc:format'] || a.mimeType || '?'})`, 'info');
-          });
-          selectedAssets = assets.map(normalizeAsset);
-          renderSelectedAssets();
-          document.getElementById('json-output').textContent = JSON.stringify(assets, null, 2);
-        },
-
-        handleAssetSelection: (assets) => {
-          log(`CALLBACK: handleAssetSelection — ${assets.length} asset(s) toggled`, 'event');
-        },
-
-        onDrop: (assets) => {
-          const list = Array.isArray(assets) ? assets : [assets];
-          log(`CALLBACK: onDrop — ${list.length} asset(s) dropped`, 'event');
-          selectedAssets = list.map(normalizeAsset);
-          renderSelectedAssets();
-          document.getElementById('json-output').textContent = JSON.stringify(list, null, 2);
-        },
-
-        onClose: () => {
-          log('CALLBACK: onClose — selector closed', 'event');
-        },
-
-        onFilterSubmit: (filters) => {
-          log(`CALLBACK: onFilterSubmit — filters changed`, 'event');
-          log(`  Filters: ${JSON.stringify(filters)}`, 'info');
-        },
-      };
-
-      log('Selector props:', 'info');
-      log(`  ${JSON.stringify({ ...selectorProps, handleSelection: '[fn]', handleAssetSelection: '[fn]', onDrop: '[fn]', onClose: '[fn]', onFilterSubmit: '[fn]' }, null, 2)}`, 'info');
-
-      try {
-        PureJSSelectors.renderAssetSelectorWithAuthFlow(
-          container,
-          selectorProps,
-          () => {
-            log('Asset Selector rendered successfully!', 'ok');
-            log('IMS popup should appear — log in with your Adobe ID', 'event');
-            setStatus('Selector loaded', 'ok');
+        PureJSSelectors.registerAssetsSelectorsAuthService({
+          imsClientId: c.imsClientId,
+          imsScope: c.imsScope,
+          redirectUri: c.redirectUri,
+          modalMode: true,
+          onImsServiceInitialized: function (service) {
+            log('IMS: onImsServiceInitialized — service ready', 'ok');
+            setStatus('IMS ready', 'ok');
+          },
+          onAccessTokenReceived: function (token) {
+            log('IMS: onAccessTokenReceived — auth success!', 'ok');
+            if (token) log('  Token: ' + token.substring(0, 40) + '...', 'info');
+            setStatus('Authenticated', 'ok');
+          },
+          onAccessTokenExpired: function () {
+            log('IMS: onAccessTokenExpired', 'warn');
+            setStatus('Token expired', 'err');
+          },
+          onErrorReceived: function (type, msg) {
+            log('IMS ERROR: ' + type + ' — ' + msg, 'err');
+            setStatus('Auth error', 'err');
           }
-        );
-        log('renderAssetSelectorWithAuthFlow called — waiting for render...', 'info');
+        });
+        log('registerAssetsSelectorsAuthService — OK', 'ok');
       } catch (e) {
-        log(`RENDER FAILED: ${e.message}`, 'err');
-        log(`Stack: ${e.stack}`, 'err');
-        container.innerHTML = `<div class="placeholder"><h2 style="color:#eb1000">Render Failed</h2><p>${e.message}</p></div>`;
+        log('registerAssetsSelectorsAuthService FAILED: ' + e.message, 'err');
+        setStatus('IMS failed', 'err');
+      }
+    }
+
+    // ═══════════════════════════════════════════
+    //  STEP 3a: Open Asset Selector in Dialog
+    //  (matches Adobe's official example pattern)
+    // ═══════════════════════════════════════════
+    function openAssetSelectorDialog() {
+      const c = readCfg();
+      if (!c.imsOrg) { log('ERROR: IMS Org ID required', 'err'); return; }
+      if (!c.imsClientId) { log('ERROR: IMS Client ID required', 'err'); return; }
+
+      registerIMS(); // re-register in case config changed
+
+      log('Rendering Asset Selector (dialog)...', 'ev');
+
+      var props = {
+        imsOrg: c.imsOrg,
+        handleSelection: handleSelection,
+        handleAssetSelection: handleAssetSelection,
+        onClose: onClose
+      };
+      if (c.repoId) props.repositoryId = c.repoId;
+      if (c.rootPath) props.rootPath = c.rootPath;
+
+      log('Props: ' + JSON.stringify(props, function (k, v) { return typeof v === 'function' ? '[fn]' : v; }, 2), 'info');
+
+      var container = document.getElementById('asset-selector-dialog-content');
+      container.innerHTML = '';
+
+      try {
+        PureJSSelectors.renderAssetSelectorWithAuthFlow(container, props, function () {
+          var dialog = document.getElementById('asset-selector-dialog');
+          dialog.showModal();
+          log('Asset Selector rendered — dialog opened', 'ok');
+          setStatus('Selector open', 'ok');
+        });
+      } catch (e) {
+        log('RENDER FAILED: ' + e.message, 'err');
         setStatus('Render error', 'err');
       }
     }
 
-    // ══════════════════════════════════════
-    //  ASSET HELPERS
-    // ══════════════════════════════════════
-    function normalizeAsset(a) {
-      return {
-        id: a.id || a['repo:assetId'] || '',
-        name: a.name || a['repo:name'] || 'Untitled',
-        path: a.path || a['repo:path'] || '',
-        mimeType: a['dc:format'] || a.mimetype || a.mimeType || '',
-        url: a.url || a['repo:thumbnailUrl'] || '',
-        deliveryUrl: a['repo:deliveryUrl'] || a.url || '',
+    // ═══════════════════════════════════════════
+    //  STEP 3b: Render inline (no dialog)
+    // ═══════════════════════════════════════════
+    function renderInline() {
+      const c = readCfg();
+      if (!c.imsOrg) { log('ERROR: IMS Org ID required', 'err'); return; }
+      if (!c.imsClientId) { log('ERROR: IMS Client ID required', 'err'); return; }
+
+      registerIMS();
+
+      log('Rendering Asset Selector (inline)...', 'ev');
+
+      var container = document.getElementById('asset-selector-container');
+      container.innerHTML = '';
+
+      var props = {
+        imsOrg: c.imsOrg,
+        handleSelection: handleSelection,
+        handleAssetSelection: handleAssetSelection,
+        onClose: onClose
       };
+      if (c.repoId) props.repositoryId = c.repoId;
+      if (c.rootPath) props.rootPath = c.rootPath;
+
+      try {
+        PureJSSelectors.renderAssetSelectorWithAuthFlow(container, props, function () {
+          log('Asset Selector rendered inline', 'ok');
+          setStatus('Selector loaded', 'ok');
+        });
+      } catch (e) {
+        log('RENDER FAILED: ' + e.message, 'err');
+        setStatus('Render error', 'err');
+      }
     }
 
-    function renderSelectedAssets() {
-      const container = document.getElementById('selected-assets');
-      if (!selectedAssets.length) {
-        container.innerHTML = '<span class="selected-empty">No assets selected yet</span>';
-        return;
-      }
+    // ═══════════════════════════════════════════
+    //  CALLBACKS
+    // ═══════════════════════════════════════════
+    function handleSelection(assets) {
+      log('handleSelection: ' + assets.length + ' asset(s)', 'ev');
+      assets.forEach(function (a, i) {
+        log('  [' + i + '] ' + (a.name || a['repo:name'] || '?'), 'info');
+        log('       path: ' + (a.path || a['repo:path'] || '?'), 'info');
+        log('       type: ' + (a['dc:format'] || a.mimeType || '?'), 'info');
+      });
+      document.getElementById('json-out').textContent = JSON.stringify(assets, null, 2);
+      renderSelected(assets);
+      var dialog = document.getElementById('asset-selector-dialog');
+      if (dialog.open) dialog.close();
+    }
 
-      container.innerHTML = selectedAssets.map(a => {
-        const isImg = a.mimeType && a.mimeType.startsWith('image/');
-        const thumb = a.url || a.deliveryUrl;
-        const imgHtml = (isImg && thumb) ? `<img src="${thumb}" alt="">` : '';
-        return `<div class="selected-asset">${imgHtml}<span class="name">${a.name}</span></div>`;
+    function handleAssetSelection(assets) {
+      log('handleAssetSelection: ' + assets.length + ' item(s) toggled', 'ev');
+    }
+
+    function onClose() {
+      log('onClose fired', 'ev');
+      var dialog = document.getElementById('asset-selector-dialog');
+      if (dialog.open) dialog.close();
+    }
+
+    function renderSelected(assets) {
+      var el = document.getElementById('sel-list');
+      if (!assets || !assets.length) { el.innerHTML = '<span class="sel-empty">No assets selected</span>'; return; }
+      el.innerHTML = assets.map(function (a) {
+        var name = a.name || a['repo:name'] || 'Untitled';
+        var url = a.url || a['repo:thumbnailUrl'] || '';
+        var isImg = ((a['dc:format'] || '') + '').indexOf('image/') === 0;
+        var img = (isImg && url) ? '<img src="' + url + '" alt="">' : '';
+        return '<div class="sel-item">' + img + '<span>' + name + '</span></div>';
       }).join('');
     }
 
-    // ══════════════════════════════════════
+    // ═══════════════════════════════════════════
     //  BOOT
-    // ══════════════════════════════════════
+    // ═══════════════════════════════════════════
     log('Page loaded', 'info');
-    log(`Current URL: ${window.location.href}`, 'info');
-    log(`Origin: ${window.location.origin}`, 'info');
+    log('URL: ' + window.location.href, 'info');
+    log('Protocol: ' + window.location.protocol, 'info');
+    if (window.location.protocol !== 'https:') {
+      log('WARNING: Not HTTPS — IMS auth requires HTTPS!', 'warn');
+    }
 
-    // Check if Adobe SDK loaded
     if (typeof PureJSSelectors !== 'undefined') {
-      log('Adobe Asset Selector SDK loaded from CDN', 'ok');
+      log('PureJSSelectors loaded — methods: ' + Object.keys(PureJSSelectors).join(', '), 'ok');
     } else {
-      log('Waiting for Adobe SDK to load...', 'warn');
-      const checkSDK = setInterval(() => {
-        if (typeof PureJSSelectors !== 'undefined') {
-          clearInterval(checkSDK);
-          log('Adobe Asset Selector SDK loaded (delayed)', 'ok');
-        }
-      }, 500);
-      setTimeout(() => {
-        clearInterval(checkSDK);
-        if (typeof PureJSSelectors === 'undefined') {
-          log('Adobe SDK did NOT load after 10s — check network/blockers', 'err');
-        }
-      }, 10000);
+      log('PureJSSelectors NOT found — Adobe CDN blocked?', 'err');
+      setStatus('SDK error', 'err');
     }
 
     loadConfig();
+    registerIMS();
   </script>
 </body>
 
