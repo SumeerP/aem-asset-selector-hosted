@@ -1,680 +1,923 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AEM Asset Selector — by Vying Digital</title>
+  <title>AEM Asset Selector — Standalone Test</title>
   <style>
     :root {
-      --bg:#0e0e10; --s1:#151518; --s2:#1c1c21; --s3:#242429;
-      --b1:#2a2a32; --b2:#35353f;
-      --t1:#eaeaef; --t2:#a0a0ae; --t3:#6a6a78;
-      --accent:#eb1000; --accent-s:rgba(235,16,0,.12); --accent-h:#d10e00;
-      --ok:#22c55e; --ok-s:rgba(34,197,94,.12);
-      --info:#3b82f6; --info-s:rgba(59,130,246,.12);
-      --warn:#f59e0b; --warn-s:rgba(245,158,11,.12);
-      --r:8px; --rs:6px; --rl:12px;
-      --f:'Segoe UI',-apple-system,BlinkMacSystemFont,sans-serif;
-      --mono:'SF Mono','Cascadia Code','Consolas',monospace;
+      --bg: #0f0f12;
+      --s1: #18181d;
+      --s2: #1f1f26;
+      --b: #2c2c36;
+      --t1: #eaeaef;
+      --t2: #9a9aaa;
+      --t3: #5e5e6e;
+      --red: #eb1000;
+      --green: #22c55e;
+      --blue: #3b82f6;
+      --r: 8px;
+      --f: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+      --mono: 'SF Mono', 'Cascadia Code', Consolas, monospace;
     }
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    html,body{height:100%;overflow:hidden}
-    body{font-family:var(--f);font-size:13px;line-height:1.5;color:var(--t1);background:var(--bg);-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
 
-    /* ━━━ UTILITY ━━━ */
-    .hidden{display:none!important}
-    .fade-in{animation:fadeIn .3s ease}
-    @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-    /* ━━━ HEADER ━━━ */
-    .hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--b1);background:var(--s1);flex-shrink:0}
-    .logo{display:flex;align-items:center;gap:8px;font-weight:600;font-size:13.5px}
-    .logo svg{color:var(--accent)}
-    .hdr-actions{display:flex;gap:4px}
-    .ic-btn{display:flex;align-items:center;justify-content:center;width:30px;height:30px;border:none;border-radius:var(--rs);background:transparent;color:var(--t3);cursor:pointer;transition:all .15s}
-    .ic-btn:hover{background:var(--s2);color:var(--t1)}
+    body {
+      font-family: var(--f);
+      background: var(--bg);
+      color: var(--t1);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
 
-    /* ━━━ VIEWS ━━━ */
-    .view{flex:1;display:flex;flex-direction:column;overflow:hidden}
+    /* ── Header ── */
+    header {
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--b);
+      background: var(--s1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
 
-    /* ━━━ WIZARD ━━━ */
-    .wiz{flex:1;overflow-y:auto;padding:20px 18px 24px}
-    .wiz-steps{display:flex;gap:6px;margin-bottom:22px}
-    .wiz-step{flex:1;height:3px;border-radius:2px;background:var(--b1);transition:background .3s}
-    .wiz-step.done{background:var(--ok)}
-    .wiz-step.active{background:var(--accent)}
+    header h1 {
+      font-size: 16px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
 
-    .wiz-panel{display:none}
-    .wiz-panel.active{display:block}
+    header h1 span {
+      color: var(--red);
+    }
 
-    .wiz-title{font-size:17px;font-weight:700;letter-spacing:-.02em;margin-bottom:4px}
-    .wiz-desc{font-size:12.5px;color:var(--t2);line-height:1.6;margin-bottom:20px}
+    .badge {
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+    }
 
-    /* Step icon */
-    .step-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:14px}
-    .step-icon.red{background:var(--accent-s);color:var(--accent)}
-    .step-icon.blue{background:var(--info-s);color:var(--info)}
-    .step-icon.green{background:var(--ok-s);color:var(--ok)}
-    .step-icon.amber{background:var(--warn-s);color:var(--warn)}
+    .badge-test {
+      background: rgba(245, 158, 11, 0.15);
+      color: #f59e0b;
+    }
 
-    /* ━━━ FORM ELEMENTS ━━━ */
-    .field{margin-bottom:14px}
-    .field label{display:block;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--t3);margin-bottom:4px}
-    .field input,.field select{width:100%;height:36px;padding:0 10px;border:1px solid var(--b1);border-radius:var(--rs);background:var(--s1);color:var(--t1);font-size:12.5px;font-family:var(--f);outline:none;transition:border-color .15s,box-shadow .15s}
-    .field input:focus,.field select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-s)}
-    .field input::placeholder{color:var(--t3);opacity:.5}
-    .field .hint{font-size:11px;color:var(--t3);margin-top:3px;line-height:1.5}
-    .field .opt{font-weight:400;text-transform:none;letter-spacing:0;opacity:.6}
+    .badge-ok {
+      background: rgba(34, 197, 94, 0.15);
+      color: var(--green);
+    }
 
-    /* ━━━ BUTTONS ━━━ */
-    .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:38px;padding:0 18px;border:none;border-radius:var(--r);font-size:13px;font-weight:600;font-family:var(--f);cursor:pointer;transition:all .2s}
-    .btn-p{background:var(--accent);color:#fff}
-    .btn-p:hover{background:var(--accent-h)}
-    .btn-p:disabled{opacity:.4;cursor:not-allowed}
-    .btn-s{background:var(--s2);color:var(--t2);border:1px solid var(--b1)}
-    .btn-s:hover{background:var(--s3);color:var(--t1)}
-    .btn-g{background:var(--ok);color:#fff}
-    .btn-g:hover{background:#1aab54}
-    .btn-row{display:flex;gap:8px;margin-top:18px}
+    .badge-err {
+      background: rgba(235, 16, 0, 0.15);
+      color: var(--red);
+    }
 
-    /* ━━━ INFO BOX ━━━ */
-    .info-box{padding:12px 14px;border-radius:var(--r);border:1px solid var(--b1);background:var(--s2);margin-bottom:16px}
-    .info-box.blue{border-color:rgba(59,130,246,.25);background:rgba(59,130,246,.06)}
-    .info-box.amber{border-color:rgba(245,158,11,.25);background:rgba(245,158,11,.06)}
-    .info-box h4{font-size:12.5px;font-weight:600;margin-bottom:4px}
-    .info-box p{font-size:12px;color:var(--t2);line-height:1.6}
+    /* ── Main Layout ── */
+    main {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
 
-    /* ━━━ CODE BLOCK ━━━ */
-    .code-block{position:relative;padding:10px 12px;border-radius:var(--rs);background:var(--s1);border:1px solid var(--b1);font-family:var(--mono);font-size:11.5px;color:var(--t2);line-height:1.6;margin:8px 0;overflow-x:auto;white-space:pre-wrap;word-break:break-all}
-    .copy-btn{position:absolute;top:6px;right:6px;padding:3px 8px;border-radius:4px;background:var(--s3);border:1px solid var(--b1);color:var(--t3);font-size:10px;font-family:var(--f);cursor:pointer;transition:all .15s}
-    .copy-btn:hover{color:var(--t1);background:var(--b2)}
+    /* ── Left: Config Panel ── */
+    .config-panel {
+      width: 340px;
+      flex-shrink: 0;
+      border-right: 1px solid var(--b);
+      background: var(--s1);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
 
-    /* ━━━ CHECKLIST ━━━ */
-    .checklist{list-style:none;margin:10px 0}
-    .checklist li{display:flex;align-items:flex-start;gap:8px;padding:6px 0;font-size:12.5px;color:var(--t2);line-height:1.5}
-    .checklist li svg{flex-shrink:0;margin-top:2px;color:var(--t3)}
+    .config-section {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--b);
+    }
 
-    /* ━━━ TICKET PREVIEW ━━━ */
-    .ticket-preview{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r);padding:14px;margin:12px 0;max-height:200px;overflow-y:auto}
-    .ticket-preview h4{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);margin-bottom:8px}
-    .ticket-row{display:flex;gap:8px;margin-bottom:4px;font-size:12px}
-    .ticket-row .tl{color:var(--t3);min-width:100px;font-weight:600}
-    .ticket-row .tv{color:var(--t2)}
+    .config-section h3 {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--t3);
+      margin-bottom: 12px;
+    }
 
-    /* ━━━ ASSET SELECTOR CONTAINER ━━━ */
-    #asset-selector-container{flex:1;overflow:auto;background:var(--s1)}
+    .field {
+      margin-bottom: 10px;
+    }
 
-    /* ━━━ TRAY ━━━ */
-    .tray{border-top:1px solid var(--b1);background:var(--s1);flex-shrink:0;max-height:40%;display:flex;flex-direction:column}
-    .tray.hidden{display:none}
-    .tray-hdr{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;font-size:12px;font-weight:600;color:var(--t3);border-bottom:1px solid var(--b1)}
-    .txt-btn{background:none;border:none;color:var(--accent);font-size:11px;font-weight:600;cursor:pointer;font-family:var(--f)}
-    .tray-items{flex:1;overflow-y:auto;padding:8px;display:flex;flex-wrap:wrap;gap:6px}
-    .tray-hint{display:flex;align-items:center;gap:6px;padding:6px 14px;font-size:11px;color:var(--t3);background:var(--s2);border-top:1px solid var(--b1)}
+    .field label {
+      display: block;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--t2);
+      margin-bottom: 3px;
+    }
 
-    .acard{position:relative;width:64px;height:64px;border-radius:var(--rs);overflow:hidden;border:1px solid var(--b1);cursor:grab;transition:transform .15s,box-shadow .15s;flex-shrink:0}
-    .acard:hover{transform:scale(1.06);box-shadow:0 4px 12px rgba(0,0,0,.4)}
-    .acard:active{cursor:grabbing}
-    .acard img{width:100%;height:100%;object-fit:cover;display:block}
-    .acard .an{position:absolute;bottom:0;left:0;right:0;padding:2px 4px;font-size:8.5px;color:#fff;background:linear-gradient(transparent,rgba(0,0,0,.8));white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .acard .ar{position:absolute;top:2px;right:2px;width:16px;height:16px;border-radius:50%;background:rgba(0,0,0,.7);border:none;color:#fff;font-size:10px;cursor:pointer;display:none;align-items:center;justify-content:center}
-    .acard:hover .ar{display:flex}
-    .acard .fi{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--s2);font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase}
+    .field input {
+      width: 100%;
+      height: 34px;
+      padding: 0 10px;
+      border: 1px solid var(--b);
+      border-radius: 6px;
+      background: var(--s2);
+      color: var(--t1);
+      font-size: 12.5px;
+      font-family: var(--f);
+      outline: none;
+      transition: border-color 0.15s;
+    }
 
-    /* ━━━ LOADING ━━━ */
-    .loading{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:var(--t3);font-size:13px}
-    .spinner{width:26px;height:26px;border:2.5px solid var(--b1);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
-    @keyframes spin{to{transform:rotate(360deg)}}
+    .field input:focus {
+      border-color: var(--blue);
+    }
 
-    /* ━━━ TOAST ━━━ */
-    .toast{position:fixed;bottom:12px;left:12px;right:12px;padding:8px 12px;border-radius:var(--r);background:var(--s2);border:1px solid var(--b1);font-size:12px;z-index:9999;animation:slideUp .25s ease}
-    .toast.ok{border-color:var(--ok)} .toast.err{border-color:var(--accent)}
-    @keyframes slideUp{from{transform:translateY(12px);opacity:0}to{transform:translateY(0);opacity:1}}
+    .field input::placeholder {
+      color: var(--t3);
+      opacity: 0.6;
+    }
 
-    /* ━━━ POWERED BY ━━━ */
-    .powered{padding:6px 14px;border-top:1px solid var(--b1);font-size:10px;color:var(--t3);text-align:center;flex-shrink:0;background:var(--s1)}
-    .powered a{color:var(--accent);text-decoration:none}
-    .powered a:hover{text-decoration:underline}
+    .field .hint {
+      font-size: 10.5px;
+      color: var(--t3);
+      margin-top: 2px;
+    }
 
-    ::-webkit-scrollbar{width:5px}
-    ::-webkit-scrollbar-track{background:transparent}
-    ::-webkit-scrollbar-thumb{background:var(--b1);border-radius:3px}
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      height: 36px;
+      padding: 0 16px;
+      border: none;
+      border-radius: 6px;
+      font-size: 12.5px;
+      font-weight: 600;
+      font-family: var(--f);
+      cursor: pointer;
+      transition: all 0.15s;
+      width: 100%;
+    }
+
+    .btn-red {
+      background: var(--red);
+      color: #fff;
+    }
+
+    .btn-red:hover {
+      background: #d10e00;
+    }
+
+    .btn-red:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .btn-blue {
+      background: var(--blue);
+      color: #fff;
+    }
+
+    .btn-blue:hover {
+      background: #2563eb;
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--t2);
+      border: 1px solid var(--b);
+    }
+
+    .btn-outline:hover {
+      background: var(--s2);
+      color: var(--t1);
+    }
+
+    .btn-green {
+      background: var(--green);
+      color: #fff;
+    }
+
+    .btn-green:hover {
+      background: #1aad54;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .btn-row .btn {
+      flex: 1;
+    }
+
+    /* ── Right: Asset Selector + Log ── */
+    .right-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    #asset-selector-container {
+      flex: 1;
+      overflow: auto;
+      background: var(--s2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .placeholder {
+      text-align: center;
+      color: var(--t3);
+      padding: 40px;
+    }
+
+    .placeholder h2 {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--t2);
+      margin-bottom: 8px;
+    }
+
+    .placeholder p {
+      font-size: 13px;
+      line-height: 1.7;
+      max-width: 360px;
+    }
+
+    /* ── Log Panel ── */
+    .log-panel {
+      height: 200px;
+      border-top: 1px solid var(--b);
+      background: var(--s1);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .log-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 16px;
+      border-bottom: 1px solid var(--b);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--t3);
+    }
+
+    .log-clear {
+      background: none;
+      border: none;
+      color: var(--t3);
+      font-size: 10px;
+      cursor: pointer;
+      font-family: var(--f);
+    }
+
+    .log-clear:hover {
+      color: var(--t1);
+    }
+
+    .log-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8px 16px;
+      font-family: var(--mono);
+      font-size: 11.5px;
+      line-height: 1.7;
+    }
+
+    .log-entry {
+      padding: 1px 0;
+    }
+
+    .log-entry .time {
+      color: var(--t3);
+    }
+
+    .log-entry.info .msg {
+      color: var(--t2);
+    }
+
+    .log-entry.ok .msg {
+      color: var(--green);
+    }
+
+    .log-entry.err .msg {
+      color: var(--red);
+    }
+
+    .log-entry.warn .msg {
+      color: #f59e0b;
+    }
+
+    .log-entry.event .msg {
+      color: var(--blue);
+    }
+
+    /* ── Selected Assets ── */
+    .selected-panel {
+      border-bottom: 1px solid var(--b);
+      padding: 12px 20px;
+    }
+
+    .selected-panel h3 {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--t3);
+      margin-bottom: 8px;
+    }
+
+    .selected-assets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .selected-asset {
+      background: var(--s2);
+      border: 1px solid var(--b);
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 11.5px;
+      color: var(--t2);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      max-width: 280px;
+    }
+
+    .selected-asset .name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .selected-asset img {
+      width: 28px;
+      height: 28px;
+      border-radius: 4px;
+      object-fit: cover;
+    }
+
+    .selected-empty {
+      font-size: 12px;
+      color: var(--t3);
+      font-style: italic;
+    }
+
+    /* ── JSON Preview ── */
+    .json-preview {
+      padding: 12px 20px;
+    }
+
+    .json-preview h3 {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--t3);
+      margin-bottom: 8px;
+    }
+
+    .json-block {
+      background: var(--s2);
+      border: 1px solid var(--b);
+      border-radius: 6px;
+      padding: 10px 12px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--t2);
+      line-height: 1.6;
+      max-height: 180px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--b);
+      border-radius: 3px;
+    }
   </style>
 </head>
+
 <body>
 
-<!-- ━━━ HEADER ━━━ -->
-<div class="hdr">
-  <div class="logo">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 4h7v7H4V4zm9 0h7v7h-7V4zm-9 9h7v7H4v-7zm12.5 0l3.5 7h-7l3.5-7z" fill="currentColor"/></svg>
-    <span>AEM Asset Selector</span>
-  </div>
-  <div class="hdr-actions">
-    <button class="ic-btn" id="btn-refresh" title="Refresh" style="display:none">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M1 4v6h6M23 20v-6h-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M20.49 9A9 9 0 005.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 013.51 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-    </button>
-    <button class="ic-btn" id="btn-settings" title="Settings" style="display:none">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" stroke="currentColor" stroke-width="2"/></svg>
-    </button>
-  </div>
-</div>
+  <!-- ━━━ HEADER ━━━ -->
+  <header>
+    <h1><span>&#9632;</span> AEM Asset Selector — Standalone Test</h1>
+    <span class="badge badge-test" id="status-badge">Not connected</span>
+  </header>
 
-<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     SETUP WIZARD VIEW
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
-<div class="view" id="v-wizard">
-  <div class="wiz">
-    <!-- Progress steps -->
-    <div class="wiz-steps">
-      <div class="wiz-step active" data-step="0"></div>
-      <div class="wiz-step" data-step="1"></div>
-      <div class="wiz-step" data-step="2"></div>
-      <div class="wiz-step" data-step="3"></div>
-    </div>
-
-    <!-- ── STEP 0: Welcome ── -->
-    <div class="wiz-panel active" data-panel="0">
-      <div class="step-icon red">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M4 4h7v7H4V4zm9 0h7v7h-7V4zm-9 9h7v7H4v-7zm12.5 0l3.5 7h-7l3.5-7z" fill="currentColor"/></svg>
-      </div>
-      <h2 class="wiz-title">Welcome to AEM Asset Selector</h2>
-      <p class="wiz-desc">Browse your AEM DAM and drag-drop assets directly into Adobe Target, Salesforce, Braze, and any web app. Let's get you connected in 3 steps.</p>
-
-      <div class="info-box blue">
-        <h4>What you'll need</h4>
-        <p>Your Adobe IMS credentials — imsClientId, imsOrg, and apiKey. If you don't have these yet, we'll help you generate the support ticket to get them.</p>
-      </div>
-
-      <ul class="checklist">
-        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/><path d="M8 12l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> AEM as a Cloud Service access</li>
-        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/><path d="M8 12l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Admin Console access (for the support ticket)</li>
-        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/><path d="M8 12l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Chrome browser with the extension installed</li>
-      </ul>
-
-      <div class="btn-row">
-        <button class="btn btn-p" onclick="wizNext()">I have credentials — Let's go</button>
-      </div>
-      <div class="btn-row" style="margin-top:8px">
-        <button class="btn btn-s" onclick="wizGoTo(2)">I need to request credentials first</button>
-      </div>
-    </div>
-
-    <!-- ── STEP 1: Enter Credentials ── -->
-    <div class="wiz-panel" data-panel="1">
-      <div class="step-icon blue">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="3" y="11" width="18" height="11" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M7 11V7a5 5 0 0110 0v4" stroke="currentColor" stroke-width="1.5"/></svg>
-      </div>
-      <h2 class="wiz-title">Enter your AEM credentials</h2>
-      <p class="wiz-desc">These are stored locally in your browser only — never sent to our servers.</p>
-
-      <form id="cred-form" autocomplete="off">
+  <!-- ━━━ MAIN ━━━ -->
+  <main>
+    <!-- Left: Config -->
+    <div class="config-panel">
+      <div class="config-section">
+        <h3>1. IMS Configuration</h3>
         <div class="field">
           <label>IMS Org ID *</label>
-          <input type="text" id="f-org" placeholder="ABC123@AdobeOrg" required>
-          <div class="hint">Found in Adobe Admin Console → Organization profile</div>
+          <input type="text" id="f-org" placeholder="ABC123@AdobeOrg">
+          <div class="hint">Adobe Admin Console → Org profile</div>
         </div>
         <div class="field">
           <label>IMS Client ID *</label>
-          <input type="text" id="f-client" placeholder="your-client-id" required>
-          <div class="hint">Provided by Adobe after Asset Selector provisioning</div>
+          <input type="text" id="f-client" placeholder="your-client-id">
+          <div class="hint">From Adobe provisioning</div>
         </div>
         <div class="field">
           <label>API Key *</label>
-          <input type="text" id="f-api" placeholder="your-api-key" required>
-          <div class="hint">Often the same as Client ID for many Adobe integrations</div>
+          <input type="text" id="f-api" placeholder="your-api-key">
+          <div class="hint">Often same as Client ID</div>
         </div>
         <div class="field">
-          <label>Repository ID <span class="opt">(optional)</span></label>
-          <input type="text" id="f-repo" placeholder="author-pXXXXX-eXXXXXX.adobeaemcloud.com">
-          <div class="hint">Your AEM author instance URL — limits browsing to this repo</div>
-        </div>
-        <div class="field">
-          <label>IMS Scope <span class="opt">(optional)</span></label>
+          <label>IMS Scope</label>
           <input type="text" id="f-scope" value="openid, AdobeID, additional_info">
         </div>
+      </div>
 
-        <div class="btn-row">
-          <button type="button" class="btn btn-s" onclick="wizPrev()">Back</button>
-          <button type="submit" class="btn btn-p" style="flex:1">Save & Connect</button>
+      <div class="config-section">
+        <h3>2. Repository</h3>
+        <div class="field">
+          <label>Repository ID</label>
+          <input type="text" id="f-repo" placeholder="author-pXXXXX-eXXXXXX.adobeaemcloud.com">
+          <div class="hint">Leave blank to see all repos</div>
         </div>
-      </form>
-    </div>
-
-    <!-- ── STEP 2: Generate Support Ticket ── -->
-    <div class="wiz-panel" data-panel="2">
-      <div class="step-icon amber">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="currentColor" stroke-width="1.5"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-      </div>
-      <h2 class="wiz-title">Request Adobe provisioning</h2>
-      <p class="wiz-desc">You need to file a P2 support ticket with Adobe to get your imsClientId. Fill in the details below and we'll generate the ticket text for you.</p>
-
-      <div class="field">
-        <label>Your Company Name *</label>
-        <input type="text" id="t-company" placeholder="Acme Corp">
-      </div>
-      <div class="field">
-        <label>AEM Author URL *</label>
-        <input type="text" id="t-author" placeholder="https://author-pXXXXX-eXXXXXX.adobeaemcloud.com">
-        <div class="hint">Your AEM as a Cloud Service author environment URL</div>
-      </div>
-      <div class="field">
-        <label>Program ID</label>
-        <input type="text" id="t-program" placeholder="pXXXXX">
-      </div>
-      <div class="field">
-        <label>Environment ID</label>
-        <input type="text" id="t-env" placeholder="eXXXXXX">
-      </div>
-      <div class="field">
-        <label>Your Name / Requester</label>
-        <input type="text" id="t-name" placeholder="Jane Doe">
       </div>
 
-      <div class="btn-row">
-        <button class="btn btn-s" onclick="wizGoTo(0)">Back</button>
-        <button class="btn btn-p" style="flex:1" onclick="generateTicket()">Generate Ticket</button>
-      </div>
-
-      <div id="ticket-output" class="hidden" style="margin-top:16px">
-        <div class="ticket-preview" id="ticket-preview"></div>
-
-        <div class="info-box amber">
-          <h4>Important: Redirect URL</h4>
-          <p>Make sure the ticket includes <strong>assetselector.vyingdigital.com</strong> as the domain. Adobe will add this to your IMS redirect URL allowlist, which is required for authentication.</p>
+      <div class="config-section">
+        <h3>3. Selector Options</h3>
+        <div class="field">
+          <label>Selection Type</label>
+          <input type="text" id="f-selection" value="multiple">
+          <div class="hint">single or multiple</div>
         </div>
+        <div class="field">
+          <label>Color Scheme</label>
+          <input type="text" id="f-theme" value="dark">
+          <div class="hint">light or dark</div>
+        </div>
+        <div class="field">
+          <label>AEM Tier</label>
+          <input type="text" id="f-tier" value="author, delivery">
+          <div class="hint">author, delivery, or both</div>
+        </div>
+      </div>
 
+      <div class="config-section">
         <div class="btn-row">
-          <button class="btn btn-s" onclick="copyTicket()" id="copy-ticket-btn">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="13" height="13" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" stroke="currentColor" stroke-width="1.5"/></svg>
-            Copy to clipboard
+          <button class="btn btn-red" id="btn-launch" onclick="launchSelector()">
+            Launch Asset Selector
           </button>
-          <button class="btn btn-p" style="flex:1" onclick="wizGoTo(1)">I have credentials now →</button>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-outline" onclick="resetAll()">Reset</button>
+          <button class="btn btn-outline" onclick="saveConfig()">Save Config</button>
+        </div>
+        <div class="btn-row" style="margin-top: 6px;">
+          <button class="btn btn-blue" id="btn-auth-only" onclick="testAuthOnly()">
+            Test IMS Auth Only
+          </button>
         </div>
       </div>
-    </div>
 
-    <!-- ── STEP 3: Success / Ready ── -->
-    <div class="wiz-panel" data-panel="3">
-      <div class="step-icon green">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </div>
-      <h2 class="wiz-title">You're all set!</h2>
-      <p class="wiz-desc">Your AEM Asset Selector is loading. Browse your DAM, select assets, and drag them into any web app.</p>
-
-      <div class="info-box">
-        <h4>How to use</h4>
-        <p>1. Browse and search for assets in the selector above.<br>
-           2. Select assets — they'll appear in the tray at the bottom.<br>
-           3. Drag any asset from the tray into the active web page.<br>
-           4. Drop zones in Target, Salesforce, Braze etc. light up automatically.</p>
+      <!-- Selected Assets -->
+      <div class="selected-panel">
+        <h3>Selected Assets</h3>
+        <div class="selected-assets" id="selected-assets">
+          <span class="selected-empty">No assets selected yet</span>
+        </div>
       </div>
 
-      <div class="btn-row">
-        <button class="btn btn-g" onclick="launchSelector()" style="flex:1">Launch Asset Selector</button>
+      <!-- JSON Output -->
+      <div class="json-preview">
+        <h3>Last Selection (Raw JSON)</h3>
+        <div class="json-block" id="json-output">Waiting for asset selection...</div>
       </div>
     </div>
-  </div>
-</div>
 
-<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     SELECTOR VIEW
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
-<div class="view hidden" id="v-selector">
-  <div id="asset-selector-container"></div>
+    <!-- Right: Selector + Log -->
+    <div class="right-panel">
+      <div id="asset-selector-container">
+        <div class="placeholder">
+          <h2>Asset Selector will render here</h2>
+          <p>Fill in your IMS credentials on the left and click "Launch Asset Selector" to load the Adobe MFE. The IMS
+            login popup will open automatically.</p>
+        </div>
+      </div>
 
-  <div class="tray hidden" id="asset-tray">
-    <div class="tray-hdr">
-      <span id="tray-count">0 selected</span>
-      <button class="txt-btn" id="btn-clear">Clear</button>
+      <div class="log-panel">
+        <div class="log-header">
+          <span>Event Log</span>
+          <button class="log-clear" onclick="clearLog()">Clear</button>
+        </div>
+        <div class="log-body" id="log-body"></div>
+      </div>
     </div>
-    <div class="tray-items" id="tray-items"></div>
-    <div class="tray-hint">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-      <span>Drag assets into any input, image well, or drop zone on the active page</span>
-    </div>
-  </div>
-</div>
+  </main>
 
-<!-- ━━━ FOOTER ━━━ -->
-<div class="powered">Powered by <a href="https://vyingdigital.com" target="_blank" rel="noopener">Vying Digital</a></div>
+  <!-- ━━━ Adobe Asset Selector UMD ━━━ -->
+  <script
+    src="https://experience.adobe.com/solutions/CQ-assets-selectors/static-assets/resources/assets-selectors.js"></script>
 
-<!-- Adobe Asset Selector UMD -->
-<script src="https://experience.adobe.com/solutions/CQ-assets-selectors/static-assets/resources/assets-selectors.js"></script>
+  <script>
+    // ══════════════════════════════════════
+    //  STATE
+    // ══════════════════════════════════════
+    const STORAGE_KEY = 'aem-selector-test-config';
+    let selectedAssets = [];
+    let imsInstance = null;
 
-<script>
-(() => {
-  'use strict';
+    // ══════════════════════════════════════
+    //  LOGGING
+    // ══════════════════════════════════════
+    const logBody = document.getElementById('log-body');
 
-  // ── State ──
-  const KEY = 'aem-asset-selector-config';
-  let cfg = null;
-  let assets = [];
-  let wizStep = 0;
+    function log(msg, type = 'info') {
+      const now = new Date().toLocaleTimeString('en-US', { hour12: false });
+      const div = document.createElement('div');
+      div.className = `log-entry ${type}`;
+      div.innerHTML = `<span class="time">${now}</span> <span class="msg">${msg}</span>`;
+      logBody.appendChild(div);
+      logBody.scrollTop = logBody.scrollHeight;
 
-  // ── DOM ──
-  const $ = s => document.querySelector(s);
-  const $$ = s => document.querySelectorAll(s);
-  const vWiz = $('#v-wizard');
-  const vSel = $('#v-selector');
-  const container = $('#asset-selector-container');
-  const tray = $('#asset-tray');
-  const trayItems = $('#tray-items');
-  const trayCount = $('#tray-count');
-
-  // ══════════════════════════════
-  //  WIZARD NAVIGATION
-  // ══════════════════════════════
-  window.wizNext = () => wizGoTo(wizStep + 1);
-  window.wizPrev = () => wizGoTo(wizStep - 1);
-  window.wizGoTo = (step) => {
-    wizStep = Math.max(0, Math.min(3, step));
-    $$('.wiz-panel').forEach(p => p.classList.remove('active'));
-    $(`.wiz-panel[data-panel="${wizStep}"]`).classList.add('active');
-    $(`.wiz-panel[data-panel="${wizStep}"]`).classList.add('fade-in');
-
-    $$('.wiz-step').forEach((s, i) => {
-      s.classList.remove('active', 'done');
-      if (i < wizStep) s.classList.add('done');
-      if (i === wizStep) s.classList.add('active');
-    });
-  };
-
-  // ══════════════════════════════
-  //  CREDENTIAL FORM
-  // ══════════════════════════════
-  $('#cred-form').addEventListener('submit', (e) => {
-    e.preventDefault();
-    cfg = {
-      imsOrg:       $('#f-org').value.trim(),
-      imsClientId:  $('#f-client').value.trim(),
-      apiKey:       $('#f-api').value.trim(),
-      repositoryId: $('#f-repo').value.trim(),
-      imsScope:     $('#f-scope').value.trim() || 'openid, AdobeID, additional_info',
-    };
-    localStorage.setItem(KEY, JSON.stringify(cfg));
-    toast('Credentials saved', 'ok');
-    wizGoTo(3);
-  });
-
-  function populateForm() {
-    if (!cfg) return;
-    $('#f-org').value    = cfg.imsOrg || '';
-    $('#f-client').value = cfg.imsClientId || '';
-    $('#f-api').value    = cfg.apiKey || '';
-    $('#f-repo').value   = cfg.repositoryId || '';
-    $('#f-scope').value  = cfg.imsScope || 'openid, AdobeID, additional_info';
-  }
-
-  // ══════════════════════════════
-  //  TICKET GENERATOR
-  // ══════════════════════════════
-  let ticketText = '';
-
-  window.generateTicket = () => {
-    const company = $('#t-company').value.trim() || '[Company Name]';
-    const author  = $('#t-author').value.trim()  || '[AEM Author URL]';
-    const program = $('#t-program').value.trim() || '[Program ID]';
-    const env     = $('#t-env').value.trim()     || '[Environment ID]';
-    const name    = $('#t-name').value.trim()     || '[Your Name]';
-
-    const rows = [
-      ['Title', 'Asset Selector with AEM Assets'],
-      ['Priority', 'P2'],
-      ['Requested By', name],
-      ['Organization', company],
-      ['Product', 'Experience Manager Assets as a Cloud Service'],
-      ['AEM Author URL', author],
-      ['Program ID', program],
-      ['Environment ID', env],
-    ];
-
-    let html = '<h4>Support Ticket Details</h4>';
-    rows.forEach(([l, v]) => {
-      html += `<div class="ticket-row"><span class="tl">${l}</span><span class="tv">${v}</span></div>`;
-    });
-
-    html += `<div style="margin-top:10px;padding-top:8px;border-top:1px solid var(--b1)">
-      <div class="ticket-row"><span class="tl">Description</span></div>
-      <p style="font-size:12px;color:var(--t2);line-height:1.6;margin-top:4px">
-        We are requesting provisioning of the Asset Selector Micro-Frontend for use with a Chrome browser extension hosted at <strong>assetselector.vyingdigital.com</strong>.<br><br>
-        <strong>Domains for IMS redirect URL allowlist:</strong><br>
-        https://assetselector.vyingdigital.com<br>
-        https://assetselector.vyingdigital.com/<br><br>
-        <strong>Please provide:</strong> imsClientId, imsScope, apiKey, and confirmation that the above domain is in the redirect URL allowlist.
-      </p>
-    </div>`;
-
-    $('#ticket-preview').innerHTML = html;
-    $('#ticket-output').classList.remove('hidden');
-
-    // Plain text version for clipboard
-    ticketText = `ADOBE SUPPORT TICKET — Asset Selector with AEM Assets
-
-Title: Asset Selector with AEM Assets
-Priority: P2
-Requested By: ${name}
-Organization: ${company}
-Product: Experience Manager Assets as a Cloud Service
-
-AEM Cloud Service Details:
-- Author URL: ${author}
-- Program ID: ${program}
-- Environment ID: ${env}
-
-Description:
-We are requesting provisioning of the Asset Selector Micro-Frontend for use with a Chrome browser extension. The Asset Selector is hosted at a permanent web domain.
-
-Domains for IMS redirect URL allowlist:
-- https://assetselector.vyingdigital.com
-- https://assetselector.vyingdigital.com/
-
-Please provide after provisioning:
-1. imsClientId — Client ID for the Asset Selector integration
-2. imsScope — Required IMS scopes
-3. apiKey — API key for AEM Discovery service
-4. Confirmation that https://assetselector.vyingdigital.com is in the redirect URL allowlist
-
-Use Case:
-The extension enables content authors to browse AEM DAM assets in Chrome's side panel and drag-drop them directly into Adobe Target, Salesforce, Braze, and other web applications. The hosted page (assetselector.vyingdigital.com) handles all IMS authentication.`;
-  };
-
-  window.copyTicket = () => {
-    navigator.clipboard.writeText(ticketText).then(() => {
-      const btn = $('#copy-ticket-btn');
-      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Copied!';
-      setTimeout(() => {
-        btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="13" height="13" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" stroke="currentColor" stroke-width="1.5"/></svg> Copy to clipboard';
-      }, 2000);
-    });
-  };
-
-  // ══════════════════════════════
-  //  LAUNCH SELECTOR
-  // ══════════════════════════════
-  window.launchSelector = () => {
-    vWiz.classList.add('hidden');
-    vSel.classList.remove('hidden');
-    $('#btn-refresh').style.display = '';
-    $('#btn-settings').style.display = '';
-    renderAssetSelector();
-  };
-
-  function renderAssetSelector() {
-    if (!cfg) return;
-    container.innerHTML = '<div class="loading"><div class="spinner"></div><span>Connecting to AEM…</span></div>';
-
-    waitFor('PureJSSelectors', 12000)
-      .then(() => initMFE())
-      .catch(() => { container.innerHTML = '<div class="loading"><span style="color:var(--accent)">Failed to load Asset Selector SDK</span><span style="font-size:11px;color:var(--t3)">Check your network connection</span></div>'; });
-  }
-
-  function initMFE() {
-    container.innerHTML = '';
-
-    // IMS Auth
-    try {
-      PureJSSelectors.registerAssetsSelectorsAuthService({
-        imsClientId: cfg.imsClientId,
-        imsScope:    cfg.imsScope,
-        redirectUrl:  window.location.origin + window.location.pathname,
-        modalMode:   true,
-        onImsServiceInitialized: () => console.log('[AEM] IMS ready'),
-        onAccessTokenReceived:   () => console.log('[AEM] Token OK'),
-        onAccessTokenExpired:    () => toast('Session expired — click refresh', 'err'),
-        onErrorReceived:         (t, m) => toast('Auth: ' + m, 'err'),
-      });
-    } catch (e) { console.error('[AEM] IMS failed:', e); }
-
-    // Render
-    try {
-      PureJSSelectors.renderAssetSelectorWithAuthFlow(container, {
-        imsOrg:        cfg.imsOrg,
-        apiKey:        cfg.apiKey,
-        repositoryId:  cfg.repositoryId || undefined,
-        rail:          false,
-        selectionType: 'multiple',
-        colorScheme:   'dark',
-        aemTierType:   ['author', 'delivery'],
-        featureSet:    ['detail-panel'],
-        handleSelection: (a) => addToTray(a),
-        handleAssetSelection: () => {},
-        onDrop: (a) => addToTray(Array.isArray(a) ? a : [a]),
-      }, () => console.log('[AEM] Selector rendered'));
-    } catch (e) {
-      container.innerHTML = `<div class="loading"><span style="color:var(--accent)">Error: ${e.message}</span></div>`;
+      // Also log to browser console for debugging
+      const consoleFn = type === 'err' ? console.error : type === 'warn' ? console.warn : console.log;
+      consoleFn(`[AEM Test] ${msg}`);
     }
-  }
 
-  // ══════════════════════════════
-  //  TRAY MANAGEMENT
-  // ══════════════════════════════
-  function norm(a) {
-    return {
-      id:          a.id || a['repo:assetId'] || '',
-      name:        a.name || a['repo:name'] || 'Untitled',
-      path:        a.path || a['repo:path'] || '',
-      mimeType:    a['dc:format'] || a.mimetype || a.mimeType || '',
-      url:         a.url || a['repo:thumbnailUrl'] || '',
-      deliveryUrl: a['repo:deliveryUrl'] || a.url || '',
-      width:       a['tiff:imageWidth'] || a.width || 0,
-      height:      a['tiff:imageLength'] || a.height || 0,
-    };
-  }
+    function clearLog() {
+      logBody.innerHTML = '';
+      log('Log cleared', 'info');
+    }
 
-  function addToTray(list) {
-    if (!list || !list.length) return;
-    list.forEach(a => {
-      const n = norm(a);
-      const id = n.id || n.path;
-      if (!assets.find(x => (x.id || x.path) === id)) assets.push(n);
-    });
-    renderTray();
-    toast(`${list.length} asset${list.length > 1 ? 's' : ''} added`, 'ok');
-  }
+    function setStatus(text, type) {
+      const badge = document.getElementById('status-badge');
+      badge.textContent = text;
+      badge.className = `badge badge-${type}`;
+    }
 
-  function renderTray() {
-    if (!assets.length) { tray.classList.add('hidden'); return; }
-    tray.classList.remove('hidden');
-    trayCount.textContent = `${assets.length} selected`;
-    trayItems.innerHTML = '';
+    // ══════════════════════════════════════
+    //  CONFIG
+    // ══════════════════════════════════════
+    function readConfig() {
+      return {
+        imsOrg: document.getElementById('f-org').value.trim(),
+        imsClientId: document.getElementById('f-client').value.trim(),
+        apiKey: document.getElementById('f-api').value.trim(),
+        imsScope: document.getElementById('f-scope').value.trim() || 'openid, AdobeID, additional_info',
+        repositoryId: document.getElementById('f-repo').value.trim(),
+        selectionType: document.getElementById('f-selection').value.trim() || 'multiple',
+        colorScheme: document.getElementById('f-theme').value.trim() || 'dark',
+        aemTier: document.getElementById('f-tier').value.trim(),
+      };
+    }
 
-    assets.forEach((a, i) => {
-      const c = document.createElement('div');
-      c.className = 'acard';
-      c.draggable = true;
-      c.title = a.name;
-      const isImg = a.mimeType && a.mimeType.startsWith('image/');
-      const thumb = a.url || a.deliveryUrl;
+    function saveConfig() {
+      const cfg = readConfig();
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(cfg));
+      log('Config saved to localStorage', 'ok');
+    }
 
-      if (isImg && thumb) {
-        c.innerHTML = `<img src="${thumb}" alt="${a.name}" crossorigin="anonymous"><span class="an">${a.name}</span><button class="ar" data-i="${i}">×</button>`;
-      } else {
-        const ext = a.name.split('.').pop().toUpperCase();
-        c.innerHTML = `<div class="fi">${ext}</div><span class="an">${a.name}</span><button class="ar" data-i="${i}">×</button>`;
+    function loadConfig() {
+      try {
+        const cfg = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        if (!cfg) return;
+        document.getElementById('f-org').value = cfg.imsOrg || '';
+        document.getElementById('f-client').value = cfg.imsClientId || '';
+        document.getElementById('f-api').value = cfg.apiKey || '';
+        document.getElementById('f-scope').value = cfg.imsScope || 'openid, AdobeID, additional_info';
+        document.getElementById('f-repo').value = cfg.repositoryId || '';
+        document.getElementById('f-selection').value = cfg.selectionType || 'multiple';
+        document.getElementById('f-theme').value = cfg.colorScheme || 'dark';
+        document.getElementById('f-tier').value = cfg.aemTier || 'author, delivery';
+        log('Loaded saved config from localStorage', 'info');
+      } catch (e) {
+        log('No saved config found', 'info');
+      }
+    }
+
+    function resetAll() {
+      localStorage.removeItem(STORAGE_KEY);
+      document.querySelectorAll('.config-panel input').forEach(i => {
+        if (i.id === 'f-scope') i.value = 'openid, AdobeID, additional_info';
+        else if (i.id === 'f-selection') i.value = 'multiple';
+        else if (i.id === 'f-theme') i.value = 'dark';
+        else if (i.id === 'f-tier') i.value = 'author, delivery';
+        else i.value = '';
+      });
+      selectedAssets = [];
+      renderSelectedAssets();
+      document.getElementById('json-output').textContent = 'Waiting for asset selection...';
+      document.getElementById('asset-selector-container').innerHTML =
+        '<div class="placeholder"><h2>Asset Selector will render here</h2><p>Fill in your IMS credentials on the left and click "Launch Asset Selector".</p></div>';
+      setStatus('Not connected', 'test');
+      log('Reset complete', 'info');
+    }
+
+    // ══════════════════════════════════════
+    //  IMS AUTH ONLY (test without selector)
+    // ══════════════════════════════════════
+    function testAuthOnly() {
+      const cfg = readConfig();
+
+      if (!cfg.imsClientId) {
+        log('ERROR: IMS Client ID is required', 'err');
+        return;
       }
 
-      c.addEventListener('dragstart', (e) => {
-        const url = a.deliveryUrl || a.url;
-        e.dataTransfer.setData('text/plain', url);
-        e.dataTransfer.setData('text/uri-list', url);
-        e.dataTransfer.setData('application/json', JSON.stringify(a));
-        e.dataTransfer.setData('application/x-aem-asset', JSON.stringify(a));
-        if (isImg) e.dataTransfer.setData('text/html', `<img src="${url}" alt="${a.name}" width="${a.width||'auto'}" height="${a.height||'auto'}" />`);
-        e.dataTransfer.effectAllowed = 'copyMove';
-        window.parent.postMessage({ type: 'AEM_ASSET_DRAG_START', asset: a }, '*');
-      });
+      log('Testing IMS authentication only...', 'event');
+      log(`  imsClientId: ${cfg.imsClientId}`, 'info');
+      log(`  imsScope: ${cfg.imsScope}`, 'info');
+      log(`  redirectUrl: ${window.location.href}`, 'info');
 
-      c.addEventListener('dragend', () => {
-        window.parent.postMessage({ type: 'AEM_ASSET_DRAG_END' }, '*');
-      });
+      if (typeof PureJSSelectors === 'undefined') {
+        log('ERROR: PureJSSelectors not loaded. Adobe CDN script may be blocked.', 'err');
+        setStatus('SDK not loaded', 'err');
+        return;
+      }
 
-      trayItems.appendChild(c);
-    });
-  }
+      log('PureJSSelectors global found — SDK loaded OK', 'ok');
 
-  trayItems.addEventListener('click', (e) => {
-    const b = e.target.closest('.ar');
-    if (!b) return;
-    assets.splice(parseInt(b.dataset.i), 1);
-    renderTray();
-  });
+      const imsProps = {
+        imsClientId: cfg.imsClientId,
+        imsScope: cfg.imsScope,
+        redirectUrl: window.location.href,
+        modalMode: true,
 
-  // ══════════════════════════════
-  //  HEADER ACTIONS
-  // ══════════════════════════════
-  $('#btn-settings').addEventListener('click', () => {
-    vSel.classList.add('hidden');
-    vWiz.classList.remove('hidden');
-    $('#btn-refresh').style.display = 'none';
-    $('#btn-settings').style.display = 'none';
-    populateForm();
-    wizGoTo(1);
-  });
+        onImsServiceInitialized: (service) => {
+          log('EVENT: onImsServiceInitialized — IMS service is ready', 'ok');
+          log(`  Service object keys: ${Object.keys(service).join(', ')}`, 'info');
+          setStatus('IMS initialized', 'ok');
+        },
 
-  $('#btn-refresh').addEventListener('click', renderAssetSelector);
-  $('#btn-clear').addEventListener('click', () => { assets = []; renderTray(); });
+        onAccessTokenReceived: (token) => {
+          log('EVENT: onAccessTokenReceived — authentication successful!', 'ok');
+          log(`  Token length: ${token ? token.length : 'null'} chars`, 'info');
+          log(`  Token preview: ${token ? token.substring(0, 40) + '...' : 'null'}`, 'info');
+          setStatus('Authenticated', 'ok');
+        },
 
-  // Listen for messages from extension
-  window.addEventListener('message', (e) => {
-    if (e.data?.type === 'AEM_SET_CONFIG') {
-      cfg = e.data.config;
-      localStorage.setItem(KEY, JSON.stringify(cfg));
-      populateForm();
-      launchSelector();
+        onAccessTokenExpired: () => {
+          log('EVENT: onAccessTokenExpired — token has expired', 'warn');
+          setStatus('Token expired', 'err');
+        },
+
+        onErrorReceived: (type, msg) => {
+          log(`EVENT: onErrorReceived — type: ${type}, message: ${msg}`, 'err');
+          setStatus('Auth error', 'err');
+        },
+      };
+
+      try {
+        imsInstance = PureJSSelectors.registerAssetsSelectorsAuthService(imsProps);
+        log('registerAssetsSelectorsAuthService called successfully', 'ok');
+        log('Waiting for IMS popup... (allow popups if blocked)', 'event');
+      } catch (e) {
+        log(`ERROR in registerAssetsSelectorsAuthService: ${e.message}`, 'err');
+        log(`Stack: ${e.stack}`, 'err');
+        setStatus('Registration failed', 'err');
+      }
     }
-  });
 
-  // ══════════════════════════════
-  //  HELPERS
-  // ══════════════════════════════
-  function toast(msg, type) {
-    const t = document.createElement('div');
-    t.className = 'toast ' + type;
-    t.textContent = msg;
-    document.body.appendChild(t);
-    setTimeout(() => t.remove(), 3000);
-  }
+    // ══════════════════════════════════════
+    //  LAUNCH FULL ASSET SELECTOR
+    // ══════════════════════════════════════
+    function launchSelector() {
+      const cfg = readConfig();
+      const container = document.getElementById('asset-selector-container');
 
-  function waitFor(name, ms) {
-    return new Promise((res, rej) => {
-      const s = Date.now();
-      const c = () => { if (window[name]) return res(); if (Date.now() - s > ms) return rej(); requestAnimationFrame(c); };
-      c();
-    });
-  }
+      // Validate
+      if (!cfg.imsOrg || !cfg.imsClientId || !cfg.apiKey) {
+        log('ERROR: imsOrg, imsClientId, and apiKey are all required', 'err');
+        return;
+      }
 
-  // ══════════════════════════════
-  //  BOOT
-  // ══════════════════════════════
-  try { cfg = JSON.parse(localStorage.getItem(KEY)); } catch {}
-  if (cfg && cfg.imsOrg && cfg.imsClientId) {
-    populateForm();
-    wizGoTo(3);
-    // Auto-launch if returning user
-    setTimeout(() => launchSelector(), 300);
-  }
+      saveConfig();
+      log('='.repeat(50), 'info');
+      log('LAUNCHING ASSET SELECTOR', 'event');
+      log('='.repeat(50), 'info');
 
-})();
-</script>
+      // Log config
+      log('Config:', 'info');
+      log(`  imsOrg:        ${cfg.imsOrg}`, 'info');
+      log(`  imsClientId:   ${cfg.imsClientId}`, 'info');
+      log(`  apiKey:        ${cfg.apiKey}`, 'info');
+      log(`  imsScope:      ${cfg.imsScope}`, 'info');
+      log(`  repositoryId:  ${cfg.repositoryId || '(not set)'}`, 'info');
+      log(`  selectionType: ${cfg.selectionType}`, 'info');
+      log(`  colorScheme:   ${cfg.colorScheme}`, 'info');
+      log(`  aemTier:       ${cfg.aemTier}`, 'info');
+      log(`  redirectUrl:   ${window.location.href}`, 'info');
+
+      // Check SDK
+      if (typeof PureJSSelectors === 'undefined') {
+        log('ERROR: PureJSSelectors is not defined. The Adobe CDN script failed to load.', 'err');
+        log('Check: Is experience.adobe.com reachable? Any adblocker or firewall?', 'warn');
+        container.innerHTML = '<div class="placeholder"><h2 style="color:#eb1000">SDK Not Loaded</h2><p>The Adobe Asset Selector script from experience.adobe.com did not load. Check your network, adblocker, or firewall.</p></div>';
+        setStatus('SDK error', 'err');
+        return;
+      }
+
+      log('PureJSSelectors loaded OK', 'ok');
+      container.innerHTML = '';
+      setStatus('Connecting...', 'test');
+
+      // ── Step 1: Register IMS ──
+      log('Step 1: Registering IMS auth service...', 'event');
+
+      const imsProps = {
+        imsClientId: cfg.imsClientId,
+        imsScope: cfg.imsScope,
+        redirectUrl: window.location.href,
+        modalMode: true,
+
+        onImsServiceInitialized: (service) => {
+          log('IMS: onImsServiceInitialized fired', 'ok');
+        },
+
+        onAccessTokenReceived: (token) => {
+          log('IMS: onAccessTokenReceived — authenticated!', 'ok');
+          log(`  Token: ${token ? token.substring(0, 30) + '...' : 'null'}`, 'info');
+          setStatus('Authenticated', 'ok');
+        },
+
+        onAccessTokenExpired: () => {
+          log('IMS: onAccessTokenExpired — need re-auth', 'warn');
+          setStatus('Token expired', 'err');
+        },
+
+        onErrorReceived: (type, msg) => {
+          log(`IMS ERROR: ${type} — ${msg}`, 'err');
+          setStatus('Auth error', 'err');
+        },
+      };
+
+      try {
+        imsInstance = PureJSSelectors.registerAssetsSelectorsAuthService(imsProps);
+        log('IMS auth service registered successfully', 'ok');
+      } catch (e) {
+        log(`IMS registration FAILED: ${e.message}`, 'err');
+        setStatus('IMS failed', 'err');
+        return;
+      }
+
+      // ── Step 2: Render Asset Selector ──
+      log('Step 2: Rendering Asset Selector with auth flow...', 'event');
+
+      // Parse aemTier
+      const tierParts = cfg.aemTier.split(',').map(s => s.trim()).filter(Boolean);
+
+      const selectorProps = {
+        imsOrg: cfg.imsOrg,
+        apiKey: cfg.apiKey,
+        repositoryId: cfg.repositoryId || undefined,
+        rail: false,
+        selectionType: cfg.selectionType,
+        colorScheme: cfg.colorScheme,
+        aemTierType: tierParts.length ? tierParts : ['author', 'delivery'],
+        featureSet: ['detail-panel'],
+
+        handleSelection: (assets) => {
+          log(`CALLBACK: handleSelection — ${assets.length} asset(s) confirmed`, 'event');
+          assets.forEach((a, i) => {
+            log(`  [${i}] ${a.name || a['repo:name'] || 'unknown'} (${a['dc:format'] || a.mimeType || '?'})`, 'info');
+          });
+          selectedAssets = assets.map(normalizeAsset);
+          renderSelectedAssets();
+          document.getElementById('json-output').textContent = JSON.stringify(assets, null, 2);
+        },
+
+        handleAssetSelection: (assets) => {
+          log(`CALLBACK: handleAssetSelection — ${assets.length} asset(s) toggled`, 'event');
+        },
+
+        onDrop: (assets) => {
+          const list = Array.isArray(assets) ? assets : [assets];
+          log(`CALLBACK: onDrop — ${list.length} asset(s) dropped`, 'event');
+          selectedAssets = list.map(normalizeAsset);
+          renderSelectedAssets();
+          document.getElementById('json-output').textContent = JSON.stringify(list, null, 2);
+        },
+
+        onClose: () => {
+          log('CALLBACK: onClose — selector closed', 'event');
+        },
+
+        onFilterSubmit: (filters) => {
+          log(`CALLBACK: onFilterSubmit — filters changed`, 'event');
+          log(`  Filters: ${JSON.stringify(filters)}`, 'info');
+        },
+      };
+
+      log('Selector props:', 'info');
+      log(`  ${JSON.stringify({ ...selectorProps, handleSelection: '[fn]', handleAssetSelection: '[fn]', onDrop: '[fn]', onClose: '[fn]', onFilterSubmit: '[fn]' }, null, 2)}`, 'info');
+
+      try {
+        PureJSSelectors.renderAssetSelectorWithAuthFlow(
+          container,
+          selectorProps,
+          () => {
+            log('Asset Selector rendered successfully!', 'ok');
+            log('IMS popup should appear — log in with your Adobe ID', 'event');
+            setStatus('Selector loaded', 'ok');
+          }
+        );
+        log('renderAssetSelectorWithAuthFlow called — waiting for render...', 'info');
+      } catch (e) {
+        log(`RENDER FAILED: ${e.message}`, 'err');
+        log(`Stack: ${e.stack}`, 'err');
+        container.innerHTML = `<div class="placeholder"><h2 style="color:#eb1000">Render Failed</h2><p>${e.message}</p></div>`;
+        setStatus('Render error', 'err');
+      }
+    }
+
+    // ══════════════════════════════════════
+    //  ASSET HELPERS
+    // ══════════════════════════════════════
+    function normalizeAsset(a) {
+      return {
+        id: a.id || a['repo:assetId'] || '',
+        name: a.name || a['repo:name'] || 'Untitled',
+        path: a.path || a['repo:path'] || '',
+        mimeType: a['dc:format'] || a.mimetype || a.mimeType || '',
+        url: a.url || a['repo:thumbnailUrl'] || '',
+        deliveryUrl: a['repo:deliveryUrl'] || a.url || '',
+      };
+    }
+
+    function renderSelectedAssets() {
+      const container = document.getElementById('selected-assets');
+      if (!selectedAssets.length) {
+        container.innerHTML = '<span class="selected-empty">No assets selected yet</span>';
+        return;
+      }
+
+      container.innerHTML = selectedAssets.map(a => {
+        const isImg = a.mimeType && a.mimeType.startsWith('image/');
+        const thumb = a.url || a.deliveryUrl;
+        const imgHtml = (isImg && thumb) ? `<img src="${thumb}" alt="">` : '';
+        return `<div class="selected-asset">${imgHtml}<span class="name">${a.name}</span></div>`;
+      }).join('');
+    }
+
+    // ══════════════════════════════════════
+    //  BOOT
+    // ══════════════════════════════════════
+    log('Page loaded', 'info');
+    log(`Current URL: ${window.location.href}`, 'info');
+    log(`Origin: ${window.location.origin}`, 'info');
+
+    // Check if Adobe SDK loaded
+    if (typeof PureJSSelectors !== 'undefined') {
+      log('Adobe Asset Selector SDK loaded from CDN', 'ok');
+    } else {
+      log('Waiting for Adobe SDK to load...', 'warn');
+      const checkSDK = setInterval(() => {
+        if (typeof PureJSSelectors !== 'undefined') {
+          clearInterval(checkSDK);
+          log('Adobe Asset Selector SDK loaded (delayed)', 'ok');
+        }
+      }, 500);
+      setTimeout(() => {
+        clearInterval(checkSDK);
+        if (typeof PureJSSelectors === 'undefined') {
+          log('Adobe SDK did NOT load after 10s — check network/blockers', 'err');
+        }
+      }, 10000);
+    }
+
+    loadConfig();
+  </script>
 </body>
+
 </html>
