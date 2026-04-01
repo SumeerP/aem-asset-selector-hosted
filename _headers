@@ -1,3 +1,3 @@
 /*
-  X-Frame-Options: ALLOWALL
+  ! X-Frame-Options
   Content-Security-Policy: frame-ancestors *; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://experience.adobe.com https://auth.services.adobe.com https://ims-na1.adobelogin.com https://adobeid-na1.services.adobe.com https://cdn.jsdelivr.net; connect-src *; frame-src https://auth.services.adobe.com https://ims-na1.adobelogin.com https://adobeid-na1.services.adobe.com https://experience.adobe.com;
