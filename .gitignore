@@ -1,0 +1,36 @@
+# ── OS generated ──
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# ── Editor / IDE ──
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.sublime-project
+*.sublime-workspace
+
+# ── Node (if local tooling is added later) ──
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# ── Build / Temp ──
+dist/
+build/
+.cache/
+tmp/
+*.log
+
+# ── Environment / Secrets ──
+.env
+.env.local
+.env.*.local
