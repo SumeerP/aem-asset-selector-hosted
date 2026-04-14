@@ -12,6 +12,7 @@
       --bg: #0f0f12;
       --s1: #151518;
       --s2: #1c1c21;
+      --s3: #242429;
       --b: #2a2a32;
       --t1: #eaeaef;
       --t2: #a0a0ae;
@@ -19,7 +20,8 @@
       --red: #eb1000;
       --green: #22c55e;
       --blue: #3b82f6;
-      --f: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif
+      --f: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+      --mono: 'SF Mono', Consolas, monospace
     }
 
     * {
@@ -47,7 +49,6 @@
       display: none !important
     }
 
-    /* Header */
     .hdr {
       display: flex;
       align-items: center;
@@ -88,7 +89,6 @@
       color: var(--t1)
     }
 
-    /* Setup */
     .setup {
       flex: 1;
       overflow-y: auto;
@@ -175,7 +175,6 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
       width: 100%;
       height: 38px;
       border: none;
@@ -186,21 +185,167 @@
       font-weight: 600;
       font-family: var(--f);
       cursor: pointer;
-      margin-top: 16px;
-      transition: background .15s
+      margin-top: 16px
     }
 
     .btn-launch:hover {
       background: #d10e00
     }
 
-    /* Selector fills entire space */
     #aem-selector {
       flex: 1;
       overflow: auto
     }
 
-    /* Footer */
+    /* ── Asset Tray ── */
+    .tray {
+      border-top: 1px solid var(--b);
+      background: var(--s1);
+      flex-shrink: 0;
+      max-height: 45%;
+      overflow-y: auto
+    }
+
+    .tray-hdr {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--b);
+      position: sticky;
+      top: 0;
+      background: var(--s1);
+      z-index: 1
+    }
+
+    .tray-hdr span {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--t3)
+    }
+
+    .tray-clr {
+      background: none;
+      border: none;
+      color: var(--red);
+      font-size: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: var(--f)
+    }
+
+    .tray-list {
+      padding: 6px
+    }
+
+    /* Asset card in tray */
+    .acard {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      border: 1px solid var(--b);
+      border-radius: 8px;
+      background: var(--s2);
+      margin-bottom: 6px
+    }
+
+    .acard-thumb {
+      width: 48px;
+      height: 48px;
+      border-radius: 6px;
+      overflow: hidden;
+      flex-shrink: 0;
+      background: var(--s3);
+      display: flex;
+      align-items: center;
+      justify-content: center
+    }
+
+    .acard-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover
+    }
+
+    .acard-thumb .ext {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--red);
+      text-transform: uppercase
+    }
+
+    .acard-info {
+      flex: 1;
+      min-width: 0
+    }
+
+    .acard-name {
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 2px
+    }
+
+    .acard-path {
+      font-size: 10px;
+      color: var(--t3);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis
+    }
+
+    .acard-actions {
+      display: flex;
+      gap: 4px;
+      margin-top: 6px
+    }
+
+    .acard-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border: 1px solid var(--b);
+      border-radius: 4px;
+      background: var(--s3);
+      color: var(--t2);
+      font-size: 10px;
+      font-weight: 600;
+      font-family: var(--f);
+      cursor: pointer;
+      transition: all .15s;
+      white-space: nowrap
+    }
+
+    .acard-btn:hover {
+      background: var(--b);
+      color: var(--t1)
+    }
+
+    .acard-btn.copied {
+      background: rgba(34, 197, 94, .15);
+      border-color: var(--green);
+      color: var(--green)
+    }
+
+    .acard-remove {
+      background: none;
+      border: none;
+      color: var(--t3);
+      cursor: pointer;
+      font-size: 14px;
+      padding: 4px;
+      line-height: 1;
+      flex-shrink: 0
+    }
+
+    .acard-remove:hover {
+      color: var(--red)
+    }
+
     .ftr {
       padding: 4px 12px;
       border-top: 1px solid var(--b);
@@ -216,7 +361,6 @@
       text-decoration: none
     }
 
-    /* Toast */
     .toast {
       position: fixed;
       bottom: 8px;
@@ -268,7 +412,6 @@
 
 <body>
 
-  <!-- Header -->
   <div class="hdr">
     <div class="hdr-logo">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -286,7 +429,7 @@
     </button>
   </div>
 
-  <!-- Setup (shown only when no config) -->
+  <!-- Setup -->
   <div id="v-setup" class="setup">
     <div class="setup-icon">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
@@ -295,54 +438,45 @@
       </svg>
     </div>
     <h2>Connect to AEM</h2>
-    <p class="desc">Enter your credentials once. They're stored in this browser only.</p>
+    <p class="desc">Enter your credentials once. Stored in this browser only.</p>
     <form id="cfg-form" autocomplete="off">
-      <div class="fld">
-        <label>IMS Client ID *</label>
-        <input type="text" id="f-client" placeholder="your-ims-client-id" required>
+      <div class="fld"><label>IMS Client ID *</label><input type="text" id="f-client" placeholder="your-ims-client-id"
+          required>
         <div class="h">Provided by Adobe after provisioning</div>
       </div>
-      <div class="fld">
-        <label>IMS Org ID *</label>
-        <input type="text" id="f-org" placeholder="ABC123@AdobeOrg" required>
+      <div class="fld"><label>IMS Org ID *</label><input type="text" id="f-org" placeholder="ABC123@AdobeOrg" required>
         <div class="h">Adobe Admin Console → Org profile</div>
       </div>
-      <div class="fld">
-        <label>IMS Scope</label>
-        <input type="text" id="f-scope"
-          value="AdobeID,openid,additional_info.projectedProductContext,read_organizations">
-      </div>
-      <div class="fld">
-        <label>Repository ID <span class="opt">(optional)</span></label>
-        <input type="text" id="f-repo" placeholder="author-pXXXXX-eXXXXXX.adobeaemcloud.com">
-      </div>
+      <div class="fld"><label>IMS Scope</label><input type="text" id="f-scope"
+          value="AdobeID,openid,additional_info.projectedProductContext,read_organizations"></div>
+      <div class="fld"><label>Repository ID <span class="opt">(optional)</span></label><input type="text" id="f-repo"
+          placeholder="author-pXXXXX-eXXXXXX.adobeaemcloud.com"></div>
       <button type="submit" class="btn-launch">Connect & Launch</button>
     </form>
   </div>
 
-  <!-- Asset Selector (fills entire panel after config) -->
+  <!-- Selector + Tray -->
   <div id="v-selector" class="hidden" style="flex:1;display:flex;flex-direction:column;overflow:hidden">
     <div id="aem-selector"></div>
+    <div id="tray" class="tray hidden">
+      <div class="tray-hdr">
+        <span id="tray-count">0 assets ready</span>
+        <button class="tray-clr" onclick="clearTray()">Clear all</button>
+      </div>
+      <div class="tray-list" id="tray-list"></div>
+    </div>
   </div>
 
-  <!-- Footer -->
   <div class="ftr">Powered by <a href="https://vyingdigital.com" target="_blank">Vying Digital</a></div>
 
   <script>
     (function () {
       var KEY = 'aem-ext-config';
       var cfg = null;
+      var assets = [];
 
-      // ── Config ──
-      function loadCfg() {
-        try { cfg = JSON.parse(localStorage.getItem(KEY)); } catch (e) { cfg = null; }
-      }
-
-      function saveCfg(c) {
-        cfg = c;
-        localStorage.setItem(KEY, JSON.stringify(c));
-      }
-
+      function loadCfg() { try { cfg = JSON.parse(localStorage.getItem(KEY)); } catch (e) { cfg = null; } }
+      function saveCfg(c) { cfg = c; localStorage.setItem(KEY, JSON.stringify(c)); }
       function fillForm() {
         if (!cfg) return;
         document.getElementById('f-client').value = cfg.imsClientId || '';
@@ -351,7 +485,6 @@
         document.getElementById('f-repo').value = cfg.repoId || '';
       }
 
-      // ── Views ──
       window.showSetup = function () {
         document.getElementById('v-setup').classList.remove('hidden');
         document.getElementById('v-selector').classList.add('hidden');
@@ -368,63 +501,163 @@
         renderSelector();
       }
 
-      // ── Render ──
       function renderSelector() {
         if (!cfg) return;
         var container = document.getElementById('aem-selector');
         container.innerHTML = '';
 
-        // Register IMS
         try {
           PureJSSelectors.registerAssetsSelectorsAuthService({
-            imsClientId: cfg.imsClientId,
-            imsScope: cfg.imsScope,
-            redirectUri: window.location.href,
-            modalMode: true,
+            imsClientId: cfg.imsClientId, imsScope: cfg.imsScope,
+            redirectUri: window.location.href, modalMode: true,
             onImsServiceInitialized: function () { },
             onAccessTokenReceived: function () { },
             onAccessTokenExpired: function () { toast('Session expired — reopen panel', 'err'); },
             onErrorReceived: function (t, m) { toast('Auth: ' + m, 'err'); }
           });
-        } catch (e) {
-          toast('IMS error: ' + e.message, 'err');
-          return;
-        }
+        } catch (e) { toast('IMS error: ' + e.message, 'err'); return; }
 
-        // Render selector
         var props = {
           imsOrg: cfg.imsOrg,
-          handleSelection: function (assets) {
-            if (!assets || !assets.length) return;
-            toast(assets.length + ' asset' + (assets.length > 1 ? 's' : '') + ' selected', 'ok');
-            // Log to console for debugging
-            console.log('[AEM] Selected:', JSON.stringify(assets, null, 2));
-          },
+          handleSelection: onSelection,
           handleAssetSelection: function () { },
           onClose: function () { }
         };
-
         if (cfg.repoId) props.repositoryId = cfg.repoId;
 
         try {
           PureJSSelectors.renderAssetSelectorWithAuthFlow(container, props, function () {
-            console.log('[AEM] Asset Selector rendered');
+            console.log('[AEM] Selector rendered');
           });
         } catch (e) {
           container.innerHTML = '<div style="padding:20px;color:var(--t3);text-align:center">Error: ' + e.message + '</div>';
         }
       }
 
-      // ── Toast ──
+      // ── Selection handler ──
+      function onSelection(selected) {
+        if (!selected || !selected.length) return;
+
+        selected.forEach(function (a) {
+          var n = normalize(a);
+          var id = n.id || n.path;
+          if (!assets.find(function (x) { return (x.id || x.path) === id; })) {
+            assets.push(n);
+          }
+        });
+
+        renderTray();
+        toast(selected.length + ' asset' + (selected.length > 1 ? 's' : '') + ' added — use Copy buttons below', 'ok');
+      }
+
+      function normalize(a) {
+        return {
+          id: a.id || a['repo:assetId'] || '',
+          name: a.name || a['repo:name'] || 'Untitled',
+          path: a.path || a['repo:path'] || '',
+          mimeType: a['dc:format'] || a.mimetype || a.mimeType || '',
+          url: a.url || a['repo:thumbnailUrl'] || '',
+          deliveryUrl: a['repo:deliveryUrl'] || a.url || '',
+          width: a['tiff:imageWidth'] || a.width || 0,
+          height: a['tiff:imageLength'] || a.height || 0
+        };
+      }
+
+      // ── Tray rendering ──
+      function renderTray() {
+        var tray = document.getElementById('tray');
+        var list = document.getElementById('tray-list');
+        var count = document.getElementById('tray-count');
+
+        if (!assets.length) { tray.classList.add('hidden'); return; }
+        tray.classList.remove('hidden');
+        count.textContent = assets.length + ' asset' + (assets.length > 1 ? 's' : '') + ' ready';
+        list.innerHTML = '';
+
+        assets.forEach(function (a, i) {
+          var isImg = a.mimeType && a.mimeType.indexOf('image/') === 0;
+          var thumb = a.url || a.deliveryUrl;
+          var url = a.deliveryUrl || a.url;
+
+          var card = document.createElement('div');
+          card.className = 'acard';
+
+          var thumbHtml;
+          if (isImg && thumb) {
+            thumbHtml = '<div class="acard-thumb"><img src="' + thumb + '" alt=""></div>';
+          } else {
+            var ext = a.name.split('.').pop().toUpperCase();
+            thumbHtml = '<div class="acard-thumb"><span class="ext">' + ext + '</span></div>';
+          }
+
+          card.innerHTML = thumbHtml +
+            '<div class="acard-info">' +
+            '<div class="acard-name" title="' + a.name + '">' + a.name + '</div>' +
+            '<div class="acard-path" title="' + a.path + '">' + a.path + '</div>' +
+            '<div class="acard-actions">' +
+            '<button class="acard-btn" data-action="url" data-idx="' + i + '">Copy URL</button>' +
+            (isImg ? '<button class="acard-btn" data-action="html" data-idx="' + i + '">Copy IMG</button>' : '') +
+            '<button class="acard-btn" data-action="json" data-idx="' + i + '">Copy JSON</button>' +
+            '</div>' +
+            '</div>' +
+            '<button class="acard-remove" data-idx="' + i + '" title="Remove">&times;</button>';
+
+          list.appendChild(card);
+        });
+      }
+
+      // ── Tray click handlers (copy + remove) ──
+      document.addEventListener('click', function (e) {
+        // Copy buttons
+        var btn = e.target.closest('.acard-btn');
+        if (btn) {
+          var idx = parseInt(btn.dataset.idx);
+          var action = btn.dataset.action;
+          var a = assets[idx];
+          if (!a) return;
+
+          var url = a.deliveryUrl || a.url;
+          var text = '';
+
+          if (action === 'url') {
+            text = url;
+          } else if (action === 'html') {
+            text = '<img src="' + url + '" alt="' + a.name + '" width="' + (a.width || 'auto') + '" height="' + (a.height || 'auto') + '" />';
+          } else if (action === 'json') {
+            text = JSON.stringify(a, null, 2);
+          }
+
+          navigator.clipboard.writeText(text).then(function () {
+            btn.classList.add('copied');
+            var orig = btn.textContent;
+            btn.textContent = 'Copied!';
+            setTimeout(function () {
+              btn.classList.remove('copied');
+              btn.textContent = orig;
+            }, 1500);
+          });
+          return;
+        }
+
+        // Remove button
+        var rm = e.target.closest('.acard-remove');
+        if (rm) {
+          var idx = parseInt(rm.dataset.idx);
+          assets.splice(idx, 1);
+          renderTray();
+        }
+      });
+
+      window.clearTray = function () { assets = []; renderTray(); };
+
       function toast(msg, type) {
         var t = document.createElement('div');
         t.className = 'toast ' + (type || '');
         t.textContent = msg;
         document.body.appendChild(t);
-        setTimeout(function () { t.remove(); }, 3000);
+        setTimeout(function () { t.remove(); }, 3500);
       }
 
-      // ── Form ──
       document.getElementById('cfg-form').addEventListener('submit', function (e) {
         e.preventDefault();
         saveCfg({
@@ -436,11 +669,8 @@
         showSelector();
       });
 
-      // ── Boot: auto-launch if config exists ──
       loadCfg();
-      if (cfg && cfg.imsClientId && cfg.imsOrg) {
-        showSelector();
-      }
+      if (cfg && cfg.imsClientId && cfg.imsOrg) showSelector();
     })();
   </script>
 </body>
